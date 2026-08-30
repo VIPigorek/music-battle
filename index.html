@@ -75,28 +75,28 @@ button:hover{
 <h1>?? Music Battle</h1>
 
 
-<h3>Ваш ник</h3>
+<h3>Г‚Г Гё Г­ГЁГЄ</h3>
 
-<input id="nickname" placeholder="Введите ник">
+<input id="nickname" placeholder="Г‚ГўГҐГ¤ГЁГІГҐ Г­ГЁГЄ">
 
 
-<h3>VK профиль</h3>
+<h3>VK ГЇГ°Г®ГґГЁГ«Гј</h3>
 
 <input id="vk" placeholder="https://vk.com/...">
 
 
 <select id="tracks">
 
-<option value="10">10 песен</option>
-<option value="20">20 песен</option>
-<option value="50">50 песен</option>
+<option value="10">10 ГЇГҐГ±ГҐГ­</option>
+<option value="20">20 ГЇГҐГ±ГҐГ­</option>
+<option value="50">50 ГЇГҐГ±ГҐГ­</option>
 
 </select>
 
 
 
 <button onclick="createRoom()">
-?? Создать комнату
+?? Г‘Г®Г§Г¤Г ГІГј ГЄГ®Г¬Г­Г ГІГі
 </button>
 
 
@@ -104,14 +104,14 @@ button:hover{
 <hr>
 
 
-<h3>Вход в комнату</h3>
+<h3>Г‚ГµГ®Г¤ Гў ГЄГ®Г¬Г­Г ГІГі</h3>
 
 
-<input id="roomCode" placeholder="Код комнаты">
+<input id="roomCode" placeholder="ГЉГ®Г¤ ГЄГ®Г¬Г­Г ГІГ»">
 
 
 <button onclick="joinRoom()">
-?? Войти
+?? Г‚Г®Г©ГІГЁ
 </button>
 
 
@@ -119,7 +119,7 @@ button:hover{
 <h2 class="room" id="room"></h2>
 
 
-<h3>Игроки</h3>
+<h3>Г€ГЈГ°Г®ГЄГЁ</h3>
 
 
 <div id="players"></div>
@@ -221,7 +221,7 @@ document.getElementById("tracks").value;
 
 if(!nickname){
 
-alert("Введите ник");
+alert("Г‚ГўГҐГ¤ГЁГІГҐ Г­ГЁГЄ");
 
 return;
 
@@ -271,7 +271,7 @@ await addPlayer(nickname);
 
 
 document.getElementById("room").innerHTML=
-"?? Комната: "+code;
+"?? ГЉГ®Г¬Г­Г ГІГ : "+code;
 
 
 startRealtime();
@@ -315,7 +315,7 @@ code
 
 if(error){
 
-alert("Комната не найдена");
+alert("ГЉГ®Г¬Г­Г ГІГ  Г­ГҐ Г­Г Г©Г¤ГҐГ­Г ");
 
 return;
 
@@ -330,7 +330,7 @@ await addPlayer(nickname);
 
 
 document.getElementById("room").innerHTML=
-"?? Комната: "+code;
+"?? ГЉГ®Г¬Г­Г ГІГ : "+code;
 
 
 startRealtime();
@@ -470,7 +470,7 @@ html += `
 
 <span class="score">
 
-?? ${player.score} очков
+?? ${player.score} Г®Г·ГЄГ®Гў
 
 </span>
 
