@@ -5,10 +5,7 @@
 
 <meta charset="UTF-8">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Music Battle</title>
 
@@ -16,275 +13,202 @@
 
 <style>
 
-* {
-    box-sizing: border-box;
+*{
+box-sizing:border-box;
 }
 
-body {
-    margin: 0;
-    min-height: 100vh;
+body{
 
-    background:
-        radial-gradient(
-            circle at top,
-            #243b55,
-            #101827 55%,
-            #080d16
-        );
+margin:0;
 
-    color: #ffffff;
+min-height:100vh;
 
-    font-family:
-        Arial,
-        "Segoe UI",
-        sans-serif;
+background:
+radial-gradient(circle at top,#243b55,#101827 60%,#080d16);
+
+color:white;
+
+font-family:Arial,"Segoe UI",sans-serif;
+
 }
 
-.container {
-    width: min(600px, 94%);
 
-    margin: 30px auto;
+.container{
 
-    padding: 25px;
+width:min(600px,94%);
 
-    background: rgba(25, 34, 50, .96);
+margin:30px auto;
 
-    border-radius: 22px;
+padding:25px;
 
-    box-shadow:
-        0 20px 60px rgba(0,0,0,.35);
+background:rgba(25,34,50,.96);
+
+border-radius:22px;
+
+box-shadow:0 20px 60px rgba(0,0,0,.35);
+
 }
 
-h1 {
-    text-align: center;
 
-    margin-top: 0;
+h1{
 
-    color: #38bdf8;
+text-align:center;
+
+color:#38bdf8;
+
 }
 
-h2 {
-    margin-bottom: 10px;
+
+h2{
+
+margin-top:10px;
+
 }
+
 
 input,
 select,
-button {
-    width: 100%;
+button{
 
-    padding: 14px;
+width:100%;
 
-    margin: 7px 0;
+padding:14px;
 
-    border: 0;
+margin:7px 0;
 
-    border-radius: 12px;
+border:0;
 
-    font-size: 16px;
+border-radius:12px;
+
+font-size:16px;
+
 }
+
 
 input,
-select {
-    background: #111827;
+select{
 
-    color: white;
+background:#111827;
 
-    outline: none;
+color:white;
+
 }
 
-button {
-    background: #22c55e;
 
-    color: white;
+button{
 
-    font-weight: bold;
+background:#22c55e;
 
-    cursor: pointer;
+color:white;
+
+font-weight:bold;
+
+cursor:pointer;
+
 }
 
-button:hover {
-    filter: brightness(1.1);
+
+button:hover{
+
+filter:brightness(1.1);
+
 }
 
-button:disabled {
-    opacity: .5;
 
-    cursor: not-allowed;
+.secondary{
+
+background:#334155;
+
 }
 
-.secondary {
-    background: #334155;
-}
 
-.danger {
-    background: #ef4444;
-}
+.hidden{
 
-.hidden {
-    display: none !important;
-}
-
-.room-code {
-    text-align: center;
-
-    font-size: 28px;
-
-    color: #38bdf8;
-
-    font-weight: bold;
-
-    letter-spacing: 5px;
-
-    margin: 15px 0;
-}
-
-.player {
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    padding: 12px;
-
-    margin: 7px 0;
-
-    background: #273449;
-
-    border-radius: 12px;
-}
-
-.player-score {
-    color: #facc15;
-
-    font-weight: bold;
-}
-
-.host {
-    color: #fbbf24;
-
-    font-size: 13px;
-}
-
-.status {
-    text-align: center;
-
-    padding: 10px;
-
-    border-radius: 10px;
-
-    background: #172033;
-
-    margin: 10px 0;
-}
-
-.error {
-    color: #f87171;
-
-    margin: 10px 0;
-}
-
-.success {
-    color: #4ade80;
-
-    margin: 10px 0;
-}
-
-.game {
-    margin-top: 20px;
-}
-
-.timer {
-    text-align: center;
-
-    font-size: 42px;
-
-    font-weight: bold;
-
-    color: #facc15;
-
-    margin: 15px;
-}
-
-.question {
-    text-align: center;
-
-    padding: 20px;
-
-    background: #111827;
-
-    border-radius: 16px;
-
-    margin-bottom: 15px;
-}
-
-.answers {
-    display: grid;
-
-    grid-template-columns: 1fr 1fr;
-
-    gap: 10px;
-}
-
-.answer {
-    background: #334155;
-
-    min-height: 70px;
-}
-
-.answer.correct {
-    background: #16a34a;
-}
-
-.answer.wrong {
-    background: #dc2626;
-}
-
-.answer.selected {
-    outline: 3px solid #38bdf8;
-}
-
-.results {
-    margin-top: 15px;
-
-    padding: 18px;
-
-    background: #111827;
-
-    border-radius: 16px;
-}
-
-.result-row {
-    display: flex;
-
-    justify-content: space-between;
-
-    padding: 10px 0;
-
-    border-bottom: 1px solid #263247;
-}
-
-.winner {
-    text-align: center;
-
-    font-size: 24px;
-
-    color: #facc15;
-
-    padding: 20px;
-}
-
-@media(max-width:500px) {
-
-    .answers {
-        grid-template-columns: 1fr;
-    }
-
-    .container {
-        padding: 18px;
-    }
+display:none!important;
 
 }
+
+
+.room-code{
+
+text-align:center;
+
+font-size:32px;
+
+font-weight:bold;
+
+letter-spacing:6px;
+
+color:#38bdf8;
+
+}
+
+
+.status{
+
+background:#172033;
+
+padding:12px;
+
+border-radius:12px;
+
+text-align:center;
+
+margin:10px 0;
+
+}
+
+
+.player{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:12px;
+
+margin:7px 0;
+
+background:#273449;
+
+border-radius:12px;
+
+}
+
+
+.score{
+
+color:#facc15;
+
+}
+
+
+.error{
+
+color:#f87171;
+
+}
+
+
+.success{
+
+color:#4ade80;
+
+}
+
+
+img.avatar{
+
+width:70px;
+
+height:70px;
+
+border-radius:50%;
+
+}
+
 
 </style>
 
@@ -297,115 +221,153 @@ button:disabled {
 <div class="container">
 
 
-<h1>🎵 Music Battle</h1>
+<h1>
+🎵 Music Battle
+</h1>
 
 
-<!-- ========================= -->
+
+<!-- ================= -->
+<!-- SPOTIFY LOGIN -->
+<!-- ================= -->
+
+
+<div id="loginScreen">
+
+
+<h2>
+🎧 Подключение Spotify
+</h2>
+
+
+<button onclick="loginSpotify()">
+
+Войти через Spotify
+
+</button>
+
+
+<div id="profile"></div>
+
+
+</div>
+
+
+
+
+
+<!-- ================= -->
 <!-- LOBBY -->
-<!-- ========================= -->
-
-<div id="lobby">
+<!-- ================= -->
 
 
-<input
-    id="nickname"
-    maxlength="32"
-    placeholder="Введите ваш ник"
->
+<div id="lobby" class="hidden">
 
 
 <input
-    id="vkProfile"
-    placeholder="Ссылка на VK профиль"
+id="nickname"
+placeholder="Ваш ник"
+maxlength="32"
 >
 
 
 <select id="trackCount">
 
-    <option value="10">
-        10 песен
-    </option>
+<option value="10">
+10 песен
+</option>
 
-    <option value="20">
-        20 песен
-    </option>
 
-    <option value="50">
-        50 песен
-    </option>
+<option value="20">
+20 песен
+</option>
+
+
+<option value="50">
+50 песен
+</option>
+
 
 </select>
 
 
+
 <button onclick="createRoom()">
 
-    🚀 Создать комнату
+🚀 Создать комнату
 
 </button>
+
 
 
 <hr>
 
 
+
 <input
-    id="roomCodeInput"
-    maxlength="6"
-    placeholder="Код комнаты"
+id="roomCodeInput"
+placeholder="Код комнаты"
+maxlength="6"
 >
+
 
 
 <button
-    class="secondary"
-    onclick="joinRoom()"
->
+class="secondary"
+onclick="joinRoom()">
 
-    🔑 Войти в комнату
+🔑 Войти в комнату
 
 </button>
+
 
 
 <div id="message"></div>
 
+
 </div>
 
 
-<!-- ========================= -->
+
+
+
+<!-- ================= -->
 <!-- ROOM -->
-<!-- ========================= -->
-
-<div
-    id="roomScreen"
-    class="hidden"
->
+<!-- ================= -->
 
 
-<div class="room-code" id="roomCode"></div>
+<div id="roomScreen" class="hidden">
 
 
-<div
-    id="roomStatus"
-    class="status"
->
-    Ожидание игроков...
+<div id="roomCode"
+class="room-code">
+
 </div>
 
 
-<div id="hostControls">
+<div id="roomStatus"
+class="status">
+
+Ожидание игроков
+
+</div>
+
+
 
 <button
-    id="startButton"
-    onclick="startGame()"
-    class="hidden"
->
+id="startButton"
+class="hidden"
+onclick="startGame()">
 
-    ▶️ Начать игру
+▶️ Начать игру
 
 </button>
 
-</div>
 
 
-<h3>👥 Игроки</h3>
+<h3>
+👥 Игроки
+</h3>
 
 
 <div id="players"></div>
@@ -414,1652 +376,1178 @@ button:disabled {
 </div>
 
 
-<!-- ========================= -->
+
+
+
+<!-- ================= -->
 <!-- GAME -->
-<!-- ========================= -->
-
-<div
-    id="gameScreen"
-    class="game hidden"
->
+<!-- ================= -->
 
 
-<div class="status">
+<div id="gameScreen" class="hidden">
+
+
+<div id="roundInfo"
+class="status">
 
 Раунд
 
-<span id="roundNumber">
+<span id="round">
 1
 </span>
 
-из
+/
 
-<span id="totalRounds">
+<span id="total">
 10
 </span>
 
 </div>
 
 
-<div
-    class="timer"
-    id="timer"
->
+<div id="timer">
 
 15
 
 </div>
 
 
-<div class="question">
-
-
-<h2>
-🎧 Какая это песня?
-</h2>
-
-
 <button
-    id="playButton"
-    class="secondary"
-    onclick="playPreview()"
->
+class="secondary"
+onclick="playPreview()">
 
-    ▶️ Слушать фрагмент
+▶️ Слушать фрагмент
 
 </button>
 
 
-<audio
-    id="audio"
-    controls
-    style="width:100%; margin-top:10px;"
->
-</audio>
+<audio id="audio"></audio>
+
+
+<div id="answers"></div>
+
+
+<div id="result"></div>
 
 
 </div>
 
 
-<div
-    id="answers"
-    class="answers"
-></div>
-
-
-<div
-    id="roundResults"
-    class="results hidden"
->
-
-<h3>
-🏆 Результаты раунда
-</h3>
-
-
-<div id="resultsList"></div>
 
 </div>
 
 
-</div>
-
-
-</div>
 
 
 
 <script>
 
 
-// =====================================================
+// ===============================
 // SUPABASE
-// =====================================================
+// ===============================
+
 
 const SUPABASE_URL =
-    "https://rtipoyofrixgxsozysng.supabase.co";
+"https://rtipoyofrixgxsozysng.supabase.co";
 
 
 const SUPABASE_KEY =
-    "sb_publishable_um-yGCvtCrApIIfr3qrUvA_iXbsyPhb";
+"sb_publishable_um-yGCvtCrApIIfr3qrUvA_iXbsyPhb";
 
 
-const supabaseClient =
-    supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
+
+const db =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
 
 
-// =====================================================
-// VK APP
-// =====================================================
-
-const VK_APP_ID = "54745398";
 
 
-// =====================================================
+// ===============================
+// SPOTIFY
+// ===============================
+
+
+const SPOTIFY_CLIENT_ID =
+"db9e7ea214924addb0fe4d7bd96cd231";
+
+
+const SPOTIFY_REDIRECT =
+
+"https://seslhhndjqicavaxgjaf.supabase.co/functions/v1/spotify-auth";
+
+
+
+
+
+// ===============================
 // STATE
-// =====================================================
-
-let roomId = null;
-
-let playerId = null;
-
-let isHost = false;
-
-let currentRoom = null;
-
-let currentTrack = null;
-
-let currentAnswers = [];
-
-let selectedAnswer = null;
-
-let timerInterval = null;
-
-let timeLeft = 15;
-
-let realtimeChannel = null;
+// ===============================
 
 
-// =====================================================
+let user=null;
+
+let roomId=null;
+
+let playerId=null;
+
+let host=false;
+
+let currentSong=null;
+
+let currentRoom=null;
+
+let timer=null;
+
+let timeLeft=15;
+
+let channel=null;
+
+
+
+// ===============================
 // HELPERS
-// =====================================================
-
-function $(id) {
-
-    return document.getElementById(id);
-
-}
+// ===============================
 
 
-function showMessage(text, error = false) {
+function $(id){
 
-    $("message").innerHTML =
-        `<div class="${error ? "error" : "success"}">${escapeHtml(text)}</div>`;
+return document.getElementById(id);
 
 }
 
 
-function escapeHtml(text) {
 
-    return String(text ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+function message(text,error=false){
 
-}
+$("message").innerHTML=
 
-
-function generateCode() {
-
-    const chars =
-        "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-
-    let result = "";
-
-    for (let i = 0; i < 6; i++) {
-
-        result +=
-            chars[
-                Math.floor(
-                    Math.random() * chars.length
-                )
-            ];
-
-    }
-
-    return result;
+`
+<div class="${error?"error":"success"}">
+${text}
+</div>
+`;
 
 }
 
 
-// =====================================================
+
+function codeGenerate(){
+
+let chars=
+"ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+let c="";
+
+for(let i=0;i<6;i++){
+
+c+=chars[
+Math.floor(
+Math.random()*chars.length
+)
+];
+
+}
+
+return c;
+
+}
+
+
+
+
+
+// ===============================
+// SPOTIFY LOGIN
+// ===============================
+
+
+function loginSpotify(){
+
+
+let scopes=
+
+"user-read-private user-read-email playlist-read-private";
+
+
+
+let url=
+
+"https://accounts.spotify.com/authorize?"
+
++
+"client_id="+SPOTIFY_CLIENT_ID
+
++
+"&response_type=code"
+
++
+"&redirect_uri="
++
+encodeURIComponent(
+SPOTIFY_REDIRECT
+)
+
++
+"&scope="
++
+encodeURIComponent(
+scopes
+);
+
+
+
+location.href=url;
+
+
+}
+
+
+
+
+async function checkSpotify(){
+
+
+let params=
+new URLSearchParams(
+location.search
+);
+
+
+let code=
+params.get("code");
+
+
+if(!code)return;
+
+
+
+let res=
+await fetch(
+SPOTIFY_REDIRECT+
+"?code="+code
+);
+
+
+
+let data=
+await res.json();
+
+
+
+if(data.success){
+
+
+user=data.user;
+
+
+
+await db
+.from("users")
+.upsert({
+
+spotify_id:user.id,
+
+display_name:user.display_name,
+
+avatar_url:
+user.images?.[0]?.url
+
+});
+
+
+
+$("profile").innerHTML=
+
+`
+
+<img class="avatar"
+src="${user.images?.[0]?.url||''}">
+
+<br>
+
+${user.display_name}
+
+<br>
+
+<span class="success">
+Spotify подключён ✅
+</span>
+
+`;
+
+
+
+$("loginScreen")
+.classList
+.add("hidden");
+
+
+$("lobby")
+.classList
+.remove("hidden");
+
+
+}
+
+
+}
+
+
+
+checkSpotify();
+
+// ===============================
 // CREATE ROOM
-// =====================================================
+// ===============================
 
-async function createRoom() {
+async function createRoom(){
 
-    const nickname =
-        $("nickname").value.trim();
+if(!user){
 
-    const vk =
-        $("vkProfile").value.trim();
+message(
+"Сначала войдите через Spotify",
+true
+);
 
-    const trackCount =
-        Number(
-            $("trackCount").value
-        );
-
-
-    if (!nickname) {
-
-        showMessage(
-            "Введите ник.",
-            true
-        );
-
-        return;
-
-    }
-
-
-    const code =
-        generateCode();
-
-
-    const { data, error } =
-        await supabaseClient
-            .from("game_rooms")
-            .insert({
-
-                room_code: code,
-
-                vk_profile: vk,
-
-                track_count: trackCount,
-
-                total_rounds: trackCount,
-
-                current_round: 0,
-
-                game_state: "waiting"
-
-            })
-            .select()
-            .single();
-
-
-    if (error) {
-
-        console.error(error);
-
-        showMessage(
-            error.message,
-            true
-        );
-
-        return;
-
-    }
-
-
-    roomId = data.id;
-
-
-    const player =
-        await addPlayer(nickname);
-
-
-    if (!player) {
-
-        return;
-
-    }
-
-
-    playerId = player.id;
-
-    isHost = true;
-
-
-    const { error: hostError } =
-        await supabaseClient
-            .from("game_rooms")
-            .update({
-                host_id: playerId
-            })
-            .eq(
-                "id",
-                roomId
-            );
-
-
-    if (hostError) {
-
-        console.error(hostError);
-
-    }
-
-
-    currentRoom = data;
-
-
-    enterRoom(code);
+return;
 
 }
 
 
-// =====================================================
+let nickname =
+$("nickname").value.trim();
+
+
+if(!nickname){
+
+message(
+"Введите ник",
+true
+);
+
+return;
+
+}
+
+
+
+let roomCode =
+codeGenerate();
+
+
+
+let {data:room,error}=
+
+await db
+.from("rooms")
+.insert({
+
+code:roomCode,
+
+owner_id:null,
+
+track_count:
+Number(
+$("trackCount").value
+),
+
+total_rounds:
+Number(
+$("trackCount").value
+),
+
+current_round:0,
+
+status:"waiting"
+
+})
+.select()
+.single();
+
+
+
+if(error){
+
+console.error(error);
+
+message(
+error.message,
+true
+);
+
+return;
+
+}
+
+
+
+roomId=room.id;
+
+
+
+// создаём игрока
+
+
+let {data:player}=
+
+await db
+.from("players")
+.insert({
+
+room_id:roomId,
+
+user_id:user.id,
+
+nickname:nickname,
+
+score:0
+
+})
+.select()
+.single();
+
+
+
+playerId=player.id;
+
+
+
+await db
+.from("rooms")
+.update({
+
+owner_id:
+playerId
+
+})
+.eq(
+"id",
+roomId
+);
+
+
+
+host=true;
+
+
+currentRoom=room;
+
+
+
+await loadSpotifyTracks();
+
+
+
+enterRoom(roomCode);
+
+
+}
+
+
+
+
+
+// ===============================
 // JOIN ROOM
-// =====================================================
-
-async function joinRoom() {
-
-    const nickname =
-        $("nickname").value.trim();
-
-    const code =
-        $("roomCodeInput").value
-            .trim()
-            .toUpperCase();
+// ===============================
 
 
-    if (!nickname) {
-
-        showMessage(
-            "Введите ник.",
-            true
-        );
-
-        return;
-
-    }
+async function joinRoom(){
 
 
-    if (code.length !== 6) {
-
-        showMessage(
-            "Код комнаты должен содержать 6 символов.",
-            true
-        );
-
-        return;
-
-    }
+let nickname=
+$("nickname").value.trim();
 
 
-    const { data, error } =
-        await supabaseClient
-            .from("game_rooms")
-            .select("*")
-            .eq(
-                "room_code",
-                code
-            )
-            .maybeSingle();
+let code=
+$("roomCodeInput")
+.value
+.trim()
+.toUpperCase();
 
 
-    if (error) {
 
-        console.error(error);
+let {data:room}=
 
-        showMessage(
-            "Ошибка поиска комнаты.",
-            true
-        );
-
-        return;
-
-    }
-
-
-    if (!data) {
-
-        showMessage(
-            "Комната не найдена.",
-            true
-        );
-
-        return;
-
-    }
+await db
+.from("rooms")
+.select("*")
+.eq(
+"code",
+code
+)
+.single();
 
 
-    if (
-        data.game_state === "finished"
-    ) {
 
-        showMessage(
-            "Эта игра уже закончена.",
-            true
-        );
+if(!room){
 
-        return;
+message(
+"Комната не найдена",
+true
+);
 
-    }
-
-
-    roomId = data.id;
-
-    currentRoom = data;
-
-
-    const player =
-        await addPlayer(nickname);
-
-
-    if (!player) {
-
-        return;
-
-    }
-
-
-    playerId = player.id;
-
-
-    isHost =
-        data.host_id === playerId;
-
-
-    enterRoom(code);
+return;
 
 }
 
 
-// =====================================================
-// ADD PLAYER
-// =====================================================
 
-async function addPlayer(nickname) {
-
-    const { data, error } =
-        await supabaseClient
-            .from("players")
-            .insert({
-
-                room_id: roomId,
-
-                nickname: nickname,
-
-                score: 0
-
-            })
-            .select()
-            .single();
+roomId=room.id;
 
 
-    if (error) {
 
-        console.error(error);
+let {data:player}=
 
-        showMessage(
-            error.message,
-            true
-        );
+await db
+.from("players")
+.insert({
 
-        return null;
+room_id:room.id,
 
-    }
+user_id:user.id,
+
+nickname:nickname,
+
+score:0
+
+})
+.select()
+.single();
 
 
-    return data;
+
+playerId=player.id;
+
+
+currentRoom=room;
+
+
+
+enterRoom(code);
+
 
 }
 
 
-// =====================================================
+
+
+
+
+
+// ===============================
 // ENTER ROOM
-// =====================================================
-
-function enterRoom(code) {
-
-    $("lobby")
-        .classList
-        .add("hidden");
+// ===============================
 
 
-    $("roomScreen")
-        .classList
-        .remove("hidden");
+function enterRoom(code){
 
 
-    $("roomCode")
-        .textContent =
-        code;
+$("lobby")
+.classList
+.add("hidden");
 
 
-    if (isHost) {
-
-        $("startButton")
-            .classList
-            .remove("hidden");
-
-    }
+$("roomScreen")
+.classList
+.remove("hidden");
 
 
-    loadPlayers();
 
-    subscribeRealtime();
+$("roomCode")
+.textContent=
+code;
+
+
+
+if(host){
+
+$("startButton")
+.classList
+.remove("hidden");
 
 }
 
 
-// =====================================================
+
+loadPlayers();
+
+
+subscribe();
+
+
+}
+
+
+
+
+
+// ===============================
+// PLAYERS
+// ===============================
+
+
+async function loadPlayers(){
+
+
+let {data}=
+
+await db
+.from("players")
+.select("*")
+.eq(
+"room_id",
+roomId
+)
+.order(
+"score",
+{
+ascending:false
+}
+);
+
+
+
+let html="";
+
+
+data.forEach(p=>{
+
+
+html+=`
+
+<div class="player">
+
+<span>
+👤 ${p.nickname}
+</span>
+
+
+<span class="score">
+
+${p.score}
+
+</span>
+
+</div>
+
+`;
+
+});
+
+
+
+$("players").innerHTML=html;
+
+
+}
+
+
+
+
+
+// ===============================
 // REALTIME
-// =====================================================
-
-function subscribeRealtime() {
-
-    if (realtimeChannel) {
-
-        supabaseClient
-            .removeChannel(
-                realtimeChannel
-            );
-
-    }
+// ===============================
 
 
-    realtimeChannel =
-        supabaseClient
-            .channel(
-                "music-battle-" + roomId
-            )
+function subscribe(){
 
 
-            .on(
-                "postgres_changes",
-                {
-                    event: "*",
-                    schema: "public",
-                    table: "players",
-                    filter:
-                        "room_id=eq." + roomId
-                },
-                () => {
+channel=
 
-                    loadPlayers();
-
-                }
-            )
+db.channel(
+"room-"+roomId
+)
 
 
-            .on(
-                "postgres_changes",
-                {
-                    event: "*",
-                    schema: "public",
-                    table: "game_rooms",
-                    filter:
-                        "id=eq." + roomId
-                },
-                payload => {
-
-                    if (
-                        payload.new
-                    ) {
-
-                        currentRoom =
-                            payload.new;
-
-                        handleRoomUpdate(
-                            payload.new
-                        );
-
-                    }
-
-                }
-            )
+.on(
+"postgres_changes",
+{
+event:"*",
+schema:"public",
+table:"players",
+filter:
+"room_id=eq."+roomId
+},
+loadPlayers
+)
 
 
-            .subscribe();
+
+.on(
+"postgres_changes",
+{
+event:"UPDATE",
+schema:"public",
+table:"rooms",
+filter:
+"id=eq."+roomId
+},
+payload=>{
+
+
+currentRoom=
+payload.new;
+
+
+if(
+payload.new.status==="playing"
+){
+
+openGame();
 
 }
 
 
-// =====================================================
-// LOAD PLAYERS
-// =====================================================
+}
 
-async function loadPlayers() {
-
-    if (!roomId) {
-
-        return;
-
-    }
+)
 
 
-    const { data, error } =
-        await supabaseClient
-            .from("players")
-            .select("*")
-            .eq(
-                "room_id",
-                roomId
-            )
-            .order(
-                "score",
-                {
-                    ascending: false
-                }
-            );
+.subscribe();
 
-
-    if (error) {
-
-        console.error(error);
-
-        return;
-
-    }
-
-
-    let html = "";
-
-
-    data.forEach(
-        (player, index) => {
-
-            const medal =
-                index === 0
-                    ? "🥇"
-                    : index === 1
-                    ? "🥈"
-                    : index === 2
-                    ? "🥉"
-                    : "👤";
-
-
-            const hostText =
-                currentRoom &&
-                currentRoom.host_id === player.id
-                    ? `<span class="host">👑 HOST</span>`
-                    : "";
-
-
-            html += `
-
-                <div class="player">
-
-                    <span>
-                        ${medal}
-                        ${escapeHtml(player.nickname)}
-                        ${hostText}
-                    </span>
-
-                    <span class="player-score">
-                        ${player.score} очков
-                    </span>
-
-                </div>
-
-            `;
-
-        }
-    );
-
-
-    $("players").innerHTML =
-        html;
 
 }
 
 
-// =====================================================
-// ROOM UPDATE
-// =====================================================
-
-function handleRoomUpdate(room) {
-
-    $("roomStatus")
-        .textContent =
-        getGameStatus(room.game_state);
 
 
-    if (
-        room.game_state === "playing"
-    ) {
-
-        $("roomScreen")
-            .classList
-            .add("hidden");
-
-        $("gameScreen")
-            .classList
-            .remove("hidden");
 
 
-        loadCurrentRound();
-
-    }
-
-
-    if (
-        room.game_state === "finished"
-    ) {
-
-        showFinalResults();
-
-    }
-
-}
+// ===============================
+// LOAD SPOTIFY SONGS
+// ===============================
 
 
-// =====================================================
-// GAME STATUS
-// =====================================================
+async function loadSpotifyTracks(){
 
-function getGameStatus(state) {
 
-    switch (state) {
+/*
+Здесь будет следующий модуль:
+получение плейлистов Spotify
+и сохранение songs
 
-        case "waiting":
-            return "⏳ Ожидание начала игры";
+Пока берём уже добавленные песни
+*/
 
-        case "playing":
-            return "🎵 Игра идёт";
 
-        case "results":
-            return "🏆 Результаты раунда";
+let {data:songs}=
 
-        case "finished":
-            return "🎉 Игра закончена";
+await db
+.from("songs")
+.select("*")
+.limit(
+Number(
+$("trackCount").value
+)
+);
 
-        default:
-            return state;
 
-    }
+
+if(!songs || songs.length===0){
+
+message(
+"Добавьте песни в таблицу songs",
+true
+);
+
+return;
 
 }
 
 
-// =====================================================
+
+for(
+let i=0;
+i<songs.length;
+i++
+){
+
+
+await db
+.from("room_tracks")
+.insert({
+
+room_id:roomId,
+
+song_id:songs[i].id,
+
+position:i+1
+
+});
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+// ===============================
 // START GAME
-// =====================================================
-
-async function startGame() {
-
-    if (!isHost) {
-
-        return;
-
-    }
+// ===============================
 
 
-    const { data: players } =
-        await supabaseClient
-            .from("players")
-            .select("id")
-            .eq(
-                "room_id",
-                roomId
-            );
+async function startGame(){
 
 
-    if (
-        !players ||
-        players.length < 1
-    ) {
-
-        showMessage(
-            "В комнате должен быть хотя бы один игрок.",
-            true
-        );
-
-        return;
-
-    }
+if(!host)return;
 
 
-    const { data: tracks } =
-        await supabaseClient
-            .from("room_tracks")
-            .select("*")
-            .eq(
-                "room_id",
-                roomId
-            )
-            .order(
-                "position"
-            );
 
+await db
+.from("rooms")
+.update({
 
-    if (
-        !tracks ||
-        tracks.length === 0
-    ) {
+status:"playing",
 
-        showMessage(
-            "В комнате пока нет песен. Сначала нужно загрузить треки через VK.",
-            true
-        );
+current_round:1
 
-        return;
+})
+.eq(
+"id",
+roomId
+);
 
-    }
-
-
-    const shuffled =
-        shuffle(
-            tracks
-        );
-
-
-    for (
-        let i = 0;
-        i < shuffled.length;
-        i++
-    ) {
-
-        await supabaseClient
-            .from("room_tracks")
-            .update({
-                position: i + 1
-            })
-            .eq(
-                "id",
-                shuffled[i].id
-            );
-
-    }
-
-
-    await supabaseClient
-        .from("game_rooms")
-        .update({
-
-            current_round: 1,
-
-            total_rounds:
-                Math.min(
-                    currentRoom.track_count,
-                    shuffled.length
-                ),
-
-            game_state: "playing"
-
-        })
-        .eq(
-            "id",
-            roomId
-        );
 
 }
 
 
-// =====================================================
-// LOAD ROUND
-// =====================================================
-
-async function loadCurrentRound() {
-
-    const { data: room } =
-        await supabaseClient
-            .from("game_rooms")
-            .select("*")
-            .eq(
-                "id",
-                roomId
-            )
-            .single();
 
 
-    if (!room) {
 
-        return;
-
-    }
-
-
-    currentRoom = room;
+// ===============================
+// GAME
+// ===============================
 
 
-    if (
-        room.game_state !== "playing"
-    ) {
-
-        return;
-
-    }
+async function openGame(){
 
 
-    const round =
-        room.current_round;
+$("roomScreen")
+.classList
+.add("hidden");
 
 
-    $("roundNumber")
-        .textContent =
-        round;
+$("gameScreen")
+.classList
+.remove("hidden");
 
 
-    $("totalRounds")
-        .textContent =
-        room.total_rounds;
 
+loadRound();
 
-    const { data: tracks } =
-        await supabaseClient
-            .from("room_tracks")
-            .select("*")
-            .eq(
-                "room_id",
-                roomId
-            )
-            .order(
-                "position"
-            );
-
-
-    if (!tracks) {
-
-        return;
-
-    }
-
-
-    const track =
-        tracks[
-            round - 1
-        ];
-
-
-    if (!track) {
-
-        return;
-
-    }
-
-
-    currentTrack =
-        track;
-
-
-    buildAnswers(
-        tracks,
-        track
-    );
-
-
-    startTimer();
 
 }
 
 
-// =====================================================
-// BUILD ANSWERS
-// =====================================================
-
-function buildAnswers(
-    tracks,
-    correctTrack
-) {
-
-    const others =
-        tracks.filter(
-            t =>
-                t.id !== correctTrack.id
-        );
 
 
-    const randomOthers =
-        shuffle(
-            others
-        ).slice(
-            0,
-            3
-        );
+async function loadRound(){
 
 
-    currentAnswers =
-        shuffle([
-            correctTrack,
-            ...randomOthers
-        ]);
+let {data:room}=
+
+await db
+.from("rooms")
+.select("*")
+.eq(
+"id",
+roomId
+)
+.single();
 
 
-    const container =
-        $("answers");
+
+currentRoom=room;
 
 
-    container.innerHTML =
-        "";
+
+$("round")
+.textContent=
+room.current_round;
 
 
-    currentAnswers.forEach(
-        (track, index) => {
 
-            const button =
-                document.createElement(
-                    "button"
-                );
+$("total")
+.textContent=
+room.total_rounds;
 
 
-            button.className =
-                "answer";
+
+let {data}=
+
+await db
+.from("room_tracks")
+.select(
+"songs(*)"
+)
+.eq(
+"room_id",
+roomId
+)
+.eq(
+"position",
+room.current_round
+)
+.single();
 
 
-            button.textContent =
-                `${String.fromCharCode(65 + index)}. ${track.artist} — ${track.title}`;
+
+if(!data)return;
 
 
-            button.onclick =
-                () =>
-                    submitAnswer(track);
+
+currentSong=
+data.songs;
 
 
-            container.appendChild(
-                button
-            );
 
-        }
-    );
+$("audio").src=
+currentSong.preview_url;
 
 
-    if (
-        correctTrack.preview_url
-    ) {
 
-        $("audio").src =
-            correctTrack.preview_url;
+createAnswers();
 
-        $("audio").classList
-            .remove("hidden");
+startTimer();
 
-    } else {
-
-        $("audio").removeAttribute(
-            "src"
-        );
-
-    }
-
-
-    $("roundResults")
-        .classList
-        .add("hidden");
-
-
-    selectedAnswer = null;
 
 }
 
 
-// =====================================================
-// SHUFFLE
-// =====================================================
-
-function shuffle(array) {
-
-    const result =
-        [...array];
 
 
-    for (
-        let i = result.length - 1;
-        i > 0;
-        i--
-    ) {
 
-        const j =
-            Math.floor(
-                Math.random() *
-                (i + 1)
-            );
+// ===============================
+// ANSWERS
+// ===============================
 
 
-        [
-            result[i],
-            result[j]
-        ] =
-        [
-            result[j],
-            result[i]
-        ];
-
-    }
+async function createAnswers(){
 
 
-    return result;
+let {data:songs}=
+
+await db
+.from("songs")
+.select("*")
+.limit(20);
+
+
+
+let list=
+
+[songs.find(
+s=>s.id===currentSong.id
+),
+...songs]
+.filter(Boolean)
+.slice(0,4);
+
+
+
+list.sort(
+()=>Math.random()-0.5
+);
+
+
+
+$("answers").innerHTML="";
+
+
+
+list.forEach(song=>{
+
+
+let b=document.createElement("button");
+
+
+b.className="answer";
+
+
+b.innerText=
+
+song.artist+
+" - "+
+song.title;
+
+
+
+b.onclick=
+()=>answer(song);
+
+
+
+$("answers")
+.appendChild(b);
+
+
+
+});
+
+
 
 }
 
 
-// =====================================================
+
+
+function playPreview(){
+
+
+$("audio")
+.play();
+
+
+}
+
+
+
+
+
+
+// ===============================
 // TIMER
-// =====================================================
-
-function startTimer() {
-
-    clearInterval(
-        timerInterval
-    );
+// ===============================
 
 
-    timeLeft = 15;
+function startTimer(){
 
 
-    $("timer")
-        .textContent =
-        timeLeft;
+clearInterval(timer);
 
 
-    timerInterval =
-        setInterval(
-            () => {
-
-                timeLeft--;
+timeLeft=15;
 
 
-                $("timer")
-                    .textContent =
-                    timeLeft;
+$("timer")
+.textContent=timeLeft;
 
 
-                if (
-                    timeLeft <= 0
-                ) {
 
-                    clearInterval(
-                        timerInterval
-                    );
+timer=setInterval(()=>{
 
 
-                    if (
-                        !selectedAnswer
-                    ) {
+timeLeft--;
 
-                        submitAnswer(
-                            null
-                        );
 
-                    }
+$("timer")
+.textContent=timeLeft;
 
-                }
 
-            },
-            1000
-        );
+
+if(timeLeft<=0){
+
+clearInterval(timer);
 
 }
 
 
-// =====================================================
-// PLAY PREVIEW
-// =====================================================
-
-function playPreview() {
-
-    const audio =
-        $("audio");
+},1000);
 
 
-    if (!audio.src) {
-
-        showMessage(
-            "Для этой песни нет доступного превью.",
-            true
-        );
-
-        return;
-
-    }
-
-
-    audio.currentTime = 0;
-
-    audio.play()
-        .catch(
-            console.error
-        );
 
 }
 
 
-// =====================================================
-// SUBMIT ANSWER
-// =====================================================
 
-async function submitAnswer(track) {
 
-    if (
-        selectedAnswer !== null
-    ) {
 
-        return;
+// ===============================
+// ANSWER
+// ===============================
 
-    }
 
+async function answer(song){
 
-    selectedAnswer =
-        track
-            ? track.id
-            : "timeout";
 
 
-    clearInterval(
-        timerInterval
-    );
+let correct=
+song.id===currentSong.id;
 
 
-    let correct =
-        false;
 
+await db
+.from("answers")
+.insert({
 
-    let points = 0;
+room_id:roomId,
 
+player_id:playerId,
 
-    if (
-        track &&
-        currentTrack &&
-        track.id === currentTrack.id
-    ) {
+answer:song.title,
 
-        correct = true;
+correct:correct
 
+});
 
-        points =
-            Math.max(
-                20,
-                Math.round(
-                    100 *
-                    (timeLeft / 15)
-                )
-            );
 
-    }
 
+if(correct){
 
-    await supabaseClient
-        .from("answers")
-        .upsert(
-            {
 
-                room_id:
-                    roomId,
+let {data:p}=
 
-                player_id:
-                    playerId,
+await db
+.from("players")
+.select("score")
+.eq(
+"id",
+playerId
+)
+.single();
 
-                round_number:
-                    currentRoom.current_round,
 
-                answer:
-                    track
-                        ? track.title
-                        : null,
 
-                correct:
-                    correct,
+await db
+.from("players")
+.update({
 
-                points:
-                    points
+score:
+p.score+100
 
-            },
-            {
-                onConflict:
-                    "room_id,player_id,round_number"
-            }
-        );
-
-
-    if (correct) {
-
-        const { data: player } =
-            await supabaseClient
-                .from("players")
-                .select("score")
-                .eq(
-                    "id",
-                    playerId
-                )
-                .single();
-
-
-        if (player) {
-
-            await supabaseClient
-                .from("players")
-                .update({
-
-                    score:
-                        player.score +
-                        points
-
-                })
-                .eq(
-                    "id",
-                    playerId
-                );
-
-        }
-
-    }
-
-
-    showAnswerResult(
-        track,
-        correct
-    );
-
-
-    setTimeout(
-        nextRoundIfHost,
-        3500
-    );
-
-}
-
-
-// =====================================================
-// SHOW ANSWER
-// =====================================================
-
-function showAnswerResult(
-    selected,
-    correct
-) {
-
-    const buttons =
-        $("answers")
-            .querySelectorAll(
-                "button"
-            );
-
-
-    buttons.forEach(
-        button => {
-
-            const text =
-                button.textContent;
-
-
-            if (
-                currentTrack &&
-                text.includes(
-                    currentTrack.title
-                )
-            ) {
-
-                button.classList
-                    .add("correct");
-
-            }
-
-        }
-    );
-
-
-    if (
-        selected &&
-        !correct
-    ) {
-
-        buttons.forEach(
-            button => {
-
-                if (
-                    button.textContent
-                        .includes(
-                            selected.title
-                        )
-                ) {
-
-                    button.classList
-                        .add("wrong");
-
-                }
-
-            }
-        );
-
-    }
-
-
-    $("roundResults")
-        .classList
-        .remove("hidden");
-
-
-    $("resultsList")
-        .innerHTML = `
-
-            <div class="result-row">
-
-                <span>
-                    Правильный ответ:
-                </span>
-
-                <strong>
-                    ${escapeHtml(currentTrack.artist)}
-                    —
-                    ${escapeHtml(currentTrack.title)}
-                </strong>
-
-            </div>
-
-            <div class="result-row">
-
-                <span>
-                    Ваш результат:
-                </span>
-
-                <strong>
-                    ${
-                        correct
-                            ? "✅ +" + getCurrentPoints()
-                            : "❌ 0"
-                    }
-                </strong>
-
-            </div>
-
-        `;
-
-}
-
-
-// =====================================================
-// CURRENT POINTS
-// =====================================================
-
-function getCurrentPoints() {
-
-    return Math.max(
-        20,
-        Math.round(
-            100 *
-            (timeLeft / 15)
-        )
-    );
-
-}
-
-
-// =====================================================
-// NEXT ROUND
-// =====================================================
-
-async function nextRoundIfHost() {
-
-    if (!isHost) {
-
-        return;
-
-    }
-
-
-    const { data: room } =
-        await supabaseClient
-            .from("game_rooms")
-            .select("*")
-            .eq(
-                "id",
-                roomId
-            )
-            .single();
-
-
-    if (!room) {
-
-        return;
-
-    }
-
-
-    if (
-        room.current_round >=
-        room.total_rounds
-    ) {
-
-        await supabaseClient
-            .from("game_rooms")
-            .update({
-
-                game_state:
-                    "finished"
-
-            })
-            .eq(
-                "id",
-                roomId
-            );
-
-
-        return;
-
-    }
-
-
-    await supabaseClient
-        .from("game_rooms")
-        .update({
-
-            current_round:
-                room.current_round + 1
-
-        })
-        .eq(
-            "id",
-            roomId
-        );
-
-}
-
-
-// =====================================================
-// FINAL RESULTS
-// =====================================================
-
-async function showFinalResults() {
-
-    clearInterval(
-        timerInterval
-    );
-
-
-    $("roomScreen")
-        .classList
-        .add("hidden");
-
-
-    $("gameScreen")
-        .classList
-        .remove("hidden");
-
-
-    const { data: players } =
-        await supabaseClient
-            .from("players")
-            .select("*")
-            .eq(
-                "room_id",
-                roomId
-            )
-            .order(
-                "score",
-                {
-                    ascending: false
-                }
-            );
-
-
-    if (!players) {
-
-        return;
-
-    }
-
-
-    const winner =
-        players[0];
-
-
-    $("gameScreen")
-        .innerHTML = `
-
-            <div class="winner">
-
-                🎉 ИГРА ОКОНЧЕНА!
-
-                <br><br>
-
-                🏆 Победитель:
-
-                <br>
-
-                ${escapeHtml(winner?.nickname || "")}
-
-                <br>
-
-                ${winner?.score || 0} очков
-
-            </div>
-
-            <div class="results">
-
-                <h3>
-                    Итоговый рейтинг
-                </h3>
-
-                ${
-                    players.map(
-                        (p, i) => `
-
-                        <div class="result-row">
-
-                            <span>
-                                ${
-                                    i === 0
-                                        ? "🥇"
-                                        : i === 1
-                                        ? "🥈"
-                                        : i === 2
-                                        ? "🥉"
-                                        : (i + 1) + "."
-                                }
-
-                                ${escapeHtml(p.nickname)}
-
-                            </span>
-
-                            <strong>
-                                ${p.score}
-                            </strong>
-
-                        </div>
-
-                        `
-                    ).join("")
-                }
-
-            </div>
-
-        `;
-
-}
-
-
-// =====================================================
-// INITIAL CHECK
-// =====================================================
-
-console.log(
-    "Music Battle loaded"
+})
+.eq(
+"id",
+playerId
 );
 
-console.log(
-    "VK App ID:",
-    VK_APP_ID
-);
+
+
+}
+
+
+
+$("result")
+.innerHTML=
+
+correct
+?
+"✅ Правильно!"
+:
+"❌ Неверно";
+
+
+
+}
+
+
+
+
 
 </script>
-
 
 </body>
 
