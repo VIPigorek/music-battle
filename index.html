@@ -9,13 +9,16 @@
 
 <title>Music Battle</title>
 
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 
 <style>
 
 *{
 box-sizing:border-box;
 }
+
 
 body{
 
@@ -24,13 +27,20 @@ margin:0;
 min-height:100vh;
 
 background:
-radial-gradient(circle at top,#243b55,#101827 60%,#080d16);
+radial-gradient(
+circle at top,
+#243b55,
+#080d16
+);
 
 color:white;
 
-font-family:Arial,"Segoe UI",sans-serif;
+font-family:
+Arial,
+sans-serif;
 
 }
+
 
 
 .container{
@@ -41,13 +51,16 @@ margin:30px auto;
 
 padding:25px;
 
-background:rgba(25,34,50,.96);
+background:
+rgba(25,34,50,.96);
 
 border-radius:22px;
 
-box-shadow:0 20px 60px rgba(0,0,0,.35);
+box-shadow:
+0 20px 60px rgba(0,0,0,.4);
 
 }
+
 
 
 h1{
@@ -59,15 +72,8 @@ color:#38bdf8;
 }
 
 
-h2{
-
-margin-top:10px;
-
-}
-
 
 input,
-select,
 button{
 
 width:100%;
@@ -85,14 +91,15 @@ font-size:16px;
 }
 
 
-input,
-select{
+
+input{
 
 background:#111827;
 
 color:white;
 
 }
+
 
 
 button{
@@ -108,11 +115,13 @@ cursor:pointer;
 }
 
 
+
 button:hover{
 
 filter:brightness(1.1);
 
 }
+
 
 
 .secondary{
@@ -122,11 +131,13 @@ background:#334155;
 }
 
 
+
 .hidden{
 
 display:none!important;
 
 }
+
 
 
 .room-code{
@@ -135,84 +146,83 @@ text-align:center;
 
 font-size:32px;
 
-font-weight:bold;
-
-letter-spacing:6px;
-
 color:#38bdf8;
 
-}
-
-
-.status{
-
-background:#172033;
-
-padding:12px;
-
-border-radius:12px;
-
-text-align:center;
-
-margin:10px 0;
+letter-spacing:5px;
 
 }
+
 
 
 .player{
 
-display:flex;
-
-justify-content:space-between;
-
-align-items:center;
-
 padding:12px;
-
-margin:7px 0;
 
 background:#273449;
 
 border-radius:12px;
 
+margin:6px 0;
+
 }
 
 
-.score{
+
+.track{
+
+padding:12px;
+
+background:#111827;
+
+border-radius:12px;
+
+margin:6px 0;
+
+}
+
+
+
+.answer{
+
+background:#334155;
+
+}
+
+
+
+.correct{
+
+background:#16a34a!important;
+
+}
+
+
+
+.wrong{
+
+background:#dc2626!important;
+
+}
+
+
+
+.timer{
+
+text-align:center;
+
+font-size:45px;
 
 color:#facc15;
 
 }
 
 
-.error{
-
-color:#f87171;
-
-}
-
-
-.success{
-
-color:#4ade80;
-
-}
-
-
-img.avatar{
-
-width:70px;
-
-height:70px;
-
-border-radius:50%;
-
-}
-
 
 </style>
 
+
 </head>
+
 
 
 <body>
@@ -227,68 +237,34 @@ border-radius:50%;
 
 
 
-<!-- ================= -->
-<!-- SPOTIFY LOGIN -->
-<!-- ================= -->
+<!-- ЛОББИ -->
 
-
-<div id="loginScreen">
-
-
-<h2>
-🎧 Подключение Spotify
-</h2>
-
-
-<button onclick="loginSpotify()">
-
-Войти через Spotify
-
-</button>
-
-
-<div id="profile"></div>
-
-
-</div>
-
-
-
-
-
-<!-- ================= -->
-<!-- LOBBY -->
-<!-- ================= -->
-
-
-<div id="lobby" class="hidden">
+<div id="lobby">
 
 
 <input
 id="nickname"
 placeholder="Ваш ник"
-maxlength="32"
->
+/>
 
 
-<select id="trackCount">
 
-<option value="10">
-10 песен
-</option>
-
-
-<option value="20">
-20 песен
-</option>
+<input
+id="vkProfile"
+placeholder="Ссылка VK профиля"
+/>
 
 
-<option value="50">
-50 песен
-</option>
+
+<button onclick="loadMusic()">
+
+🎵 Загрузить музыку
+
+</button>
 
 
-</select>
+
+<div id="musicStatus"></div>
 
 
 
@@ -307,19 +283,15 @@ maxlength="32"
 <input
 id="roomCodeInput"
 placeholder="Код комнаты"
-maxlength="6"
->
+/>
 
 
 
-<button
-class="secondary"
-onclick="joinRoom()">
+<button class="secondary" onclick="joinRoom()">
 
 🔑 Войти в комнату
 
 </button>
-
 
 
 <div id="message"></div>
@@ -331,37 +303,16 @@ onclick="joinRoom()">
 
 
 
-<!-- ================= -->
-<!-- ROOM -->
-<!-- ================= -->
+<!-- КОМНАТА -->
 
 
 <div id="roomScreen" class="hidden">
 
 
-<div id="roomCode"
+<div
+id="roomCode"
 class="room-code">
-
 </div>
-
-
-<div id="roomStatus"
-class="status">
-
-Ожидание игроков
-
-</div>
-
-
-
-<button
-id="startButton"
-class="hidden"
-onclick="startGame()">
-
-▶️ Начать игру
-
-</button>
 
 
 
@@ -373,77 +324,73 @@ onclick="startGame()">
 <div id="players"></div>
 
 
+
+<button
+id="startBtn"
+onclick="startGame()">
+
+▶ Начать игру
+
+</button>
+
+
 </div>
 
 
 
 
 
-<!-- ================= -->
-<!-- GAME -->
-<!-- ================= -->
+<!-- ИГРА -->
 
 
 <div id="gameScreen" class="hidden">
 
 
-<div id="roundInfo"
-class="status">
-
-Раунд
-
-<span id="round">
-1
-</span>
-
-/
-
-<span id="total">
-10
-</span>
-
-</div>
-
-
-<div id="timer">
-
+<div class="timer" id="timer">
 15
-
 </div>
+
+
+
+<h2 id="question">
+
+🎧 Какая это песня?
+
+</h2>
+
 
 
 <button
 class="secondary"
-onclick="playPreview()">
+onclick="playMusic()">
 
-▶️ Слушать фрагмент
+▶ Слушать
 
 </button>
 
 
-<audio id="audio"></audio>
+
+<audio
+id="audio"
+controls
+style="width:100%">
+</audio>
+
 
 
 <div id="answers"></div>
 
 
-<div id="result"></div>
+</div>
 
 
 </div>
 
 
 
-</div>
+<script> 
 
-
-
-
-
-<script>
-
-
-// ===============================
+  // ===============================
 // SUPABASE
 // ===============================
 
@@ -457,27 +404,11 @@ const SUPABASE_KEY =
 
 
 
-const db =
+const supabaseClient =
 supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
+    SUPABASE_URL,
+    SUPABASE_KEY
 );
-
-
-
-
-// ===============================
-// SPOTIFY
-// ===============================
-
-
-const SPOTIFY_CLIENT_ID =
-"db9e7ea214924addb0fe4d7bd96cd231";
-
-
-const SPOTIFY_REDIRECT =
-"https://rtipoyofrixgxsozysng.supabase.co/functions/v1/spotify-auth";
-
 
 
 
@@ -486,23 +417,21 @@ const SPOTIFY_REDIRECT =
 // ===============================
 
 
-let user=null;
+let tracks = [];
 
-let roomId=null;
+let roomId = null;
 
-let playerId=null;
+let playerId = null;
 
-let host=false;
+let roomCode = null;
 
-let currentSong=null;
+let isHost = false;
 
-let currentRoom=null;
+let currentTrack = null;
 
-let timer=null;
+let timer = null;
 
-let timeLeft=15;
-
-let channel=null;
+let timeLeft = 15;
 
 
 
@@ -519,30 +448,28 @@ return document.getElementById(id);
 
 
 
-function message(text,error=false){
+function message(text){
 
-$("message").innerHTML=
-
-`
-<div class="${error?"error":"success"}">
-${text}
-</div>
-`;
+$("message").innerHTML =
+text;
 
 }
 
 
 
-function codeGenerate(){
+function randomCode(){
 
-let chars=
+let chars =
 "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
-let c="";
+
+let result="";
+
 
 for(let i=0;i<6;i++){
 
-c+=chars[
+result +=
+chars[
 Math.floor(
 Math.random()*chars.length
 )
@@ -550,181 +477,179 @@ Math.random()*chars.length
 
 }
 
-return c;
+
+return result;
 
 }
 
 
 
 
-
 // ===============================
-// SPOTIFY LOGIN
+// SPOTIFY SEARCH
 // ===============================
 
 
-function loginSpotify(){
+async function spotifySearch(query){
 
 
-let scopes=
-
-"user-read-private user-read-email playlist-read-private";
-
-
-
-let url=
-
-"https://accounts.spotify.com/authorize?"
-
-+
-"client_id="+SPOTIFY_CLIENT_ID
-
-+
-"&response_type=code"
-
-+
-"&redirect_uri="
-+
-encodeURIComponent(
-SPOTIFY_REDIRECT
-)
-
-+
-"&scope="
-+
-encodeURIComponent(
-scopes
-);
-
-
-
-location.href=url;
-
-
-}
-
-
-
-
-async function checkSpotify(){
-
-
-let params=
-new URLSearchParams(
-location.search
-);
-
-
-let code=
-params.get("code");
-
-
-if(!code)return;
-
-
-
-let res=
+const response =
 await fetch(
-SPOTIFY_REDIRECT+
-"?code="+code
+
+SUPABASE_URL+
+"/functions/v1/spotify-search",
+
+{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":
+"application/json",
+
+"apikey":
+SUPABASE_KEY
+
+},
+
+body:JSON.stringify({
+
+query:query
+
+})
+
+}
+
 );
 
 
 
-let data=
-await res.json();
-
-
-
-if(data.success){
-
-
-user=data.user;
-
-
-
-await db
-.from("users")
-.upsert({
-
-spotify_id:user.id,
-
-display_name:user.display_name,
-
-avatar_url:
-user.images?.[0]?.url
-
-});
-
-
-
-$("profile").innerHTML=
-
-`
-
-<img class="avatar"
-src="${user.images?.[0]?.url||''}">
-
-<br>
-
-${user.display_name}
-
-<br>
-
-<span class="success">
-Spotify подключён ✅
-</span>
-
-`;
-
-
-
-$("loginScreen")
-.classList
-.add("hidden");
-
-
-$("lobby")
-.classList
-.remove("hidden");
-
-
-}
+return await response.json();
 
 
 }
 
 
 
-checkSpotify();
+
 
 // ===============================
-// CREATE ROOM
+// ЗАГРУЗКА МУЗЫКИ
 // ===============================
 
-async function createRoom(){
 
-if(!user){
+async function loadMusic(){
 
-message(
-"Сначала войдите через Spotify",
-true
-);
+
+const vk =
+$("vkProfile")
+.value
+.trim();
+
+
+
+if(!vk){
+
+$("musicStatus").innerHTML =
+"❌ Введите VK ссылку";
 
 return;
 
 }
 
 
-let nickname =
-$("nickname").value.trim();
+
+$("musicStatus").innerHTML =
+"⏳ Ищем песни...";
+
+
+
+// ВРЕМЕННО
+// сюда позже подключим VK API
+
+
+const vkSongs = [
+
+"Miyagi I Got Love",
+
+"Eminem Lose Yourself",
+
+"Rauf Faik Детство",
+
+"Imagine Dragons Believer",
+
+"The Weeknd Blinding Lights"
+
+];
+
+
+
+tracks=[];
+
+
+
+for(
+const song of vkSongs
+){
+
+
+const result =
+await spotifySearch(song);
+
+
+
+if(
+Array.isArray(result)
+&&
+result.length>0
+){
+
+
+tracks.push(
+result[0]
+);
+
+
+}
+
+
+}
+
+
+
+$("musicStatus").innerHTML =
+
+"✅ Найдено песен: "
++
+tracks.length;
+
+
+
+}
+
+
+
+
+// ===============================
+// СОЗДАНИЕ КОМНАТЫ
+// ===============================
+
+
+async function createRoom(){
+
+
+const nickname =
+$("nickname")
+.value
+.trim();
+
 
 
 if(!nickname){
 
 message(
-"Введите ник",
-true
+"Введите ник"
 );
 
 return;
@@ -733,48 +658,56 @@ return;
 
 
 
-let roomCode =
-codeGenerate();
+if(tracks.length===0){
+
+message(
+"Сначала загрузите музыку"
+);
+
+return;
+
+}
 
 
 
-let {data:room,error}=
 
-await db
-.from("rooms")
+roomCode =
+randomCode();
+
+
+
+
+
+const {data,error}=
+
+await supabaseClient
+.from("game_rooms")
 .insert({
 
-code:roomCode,
-
-owner_id:null,
-
-track_count:
-Number(
-$("trackCount").value
-),
+room_code:
+roomCode,
 
 total_rounds:
-Number(
-$("trackCount").value
-),
+tracks.length,
 
-current_round:0,
+current_round:
+0,
 
-status:"waiting"
+game_state:
+"waiting"
 
 })
 .select()
 .single();
+
+
 
 
 
 if(error){
 
-console.error(error);
-
 message(
-error.message,
-true
+error.message
 );
 
 return;
@@ -783,26 +716,26 @@ return;
 
 
 
-roomId=room.id;
+roomId =
+data.id;
 
 
 
-// создаём игрока
 
+const player =
 
-let {data:player}=
-
-await db
+await supabaseClient
 .from("players")
 .insert({
 
-room_id:roomId,
+room_id:
+roomId,
 
-user_id:user.id,
+nickname:
+nickname,
 
-nickname:nickname,
-
-score:0
+score:
+0
 
 })
 .select()
@@ -810,15 +743,22 @@ score:0
 
 
 
-playerId=player.id;
+
+playerId =
+player.data.id;
 
 
 
-await db
-.from("rooms")
+isHost=true;
+
+
+
+
+await supabaseClient
+.from("game_rooms")
 .update({
 
-owner_id:
+host_id:
 playerId
 
 })
@@ -829,104 +769,41 @@ roomId
 
 
 
-host=true;
 
 
-currentRoom=room;
+// сохраняем треки
 
 
-
-await loadSpotifyTracks();
-
-
-
-enterRoom(roomCode);
-
-
-}
+for(
+let i=0;
+i<tracks.length;
+i++
+){
 
 
-
-
-
-// ===============================
-// JOIN ROOM
-// ===============================
-
-
-async function joinRoom(){
-
-
-let nickname=
-$("nickname").value.trim();
-
-
-let code=
-$("roomCodeInput")
-.value
-.trim()
-.toUpperCase();
-
-
-
-let {data:room}=
-
-await db
-.from("rooms")
-.select("*")
-.eq(
-"code",
-code
-)
-.single();
-
-
-
-if(!room){
-
-message(
-"Комната не найдена",
-true
-);
-
-return;
-
-}
-
-
-
-roomId=room.id;
-
-
-
-let {data:player}=
-
-await db
-.from("players")
+await supabaseClient
+.from("room_tracks")
 .insert({
 
-room_id:room.id,
+room_id:
+roomId,
 
-user_id:user.id,
+artist:
+tracks[i].artist,
 
-nickname:nickname,
+title:
+tracks[i].title,
 
-score:0
+preview_url:
+tracks[i].preview_url,
 
-})
-.select()
-.single();
+cover:
+tracks[i].cover,
 
+position:
+i+1
 
-
-playerId=player.id;
-
-
-currentRoom=room;
-
-
-
-enterRoom(code);
+});
 
 
 }
@@ -934,15 +811,16 @@ enterRoom(code);
 
 
 
+enterRoom();
 
+}
 
-
+  // ===============================
+// ВХОД В КОМНАТУ
 // ===============================
-// ENTER ROOM
-// ===============================
 
 
-function enterRoom(code){
+function enterRoom(){
 
 
 $("lobby")
@@ -957,25 +835,15 @@ $("roomScreen")
 
 
 $("roomCode")
-.textContent=
-code;
-
-
-
-if(host){
-
-$("startButton")
-.classList
-.remove("hidden");
-
-}
+innerHTML =
+roomCode;
 
 
 
 loadPlayers();
 
 
-subscribe();
+subscribeRoom();
 
 
 }
@@ -985,86 +853,23 @@ subscribe();
 
 
 // ===============================
-// PLAYERS
+// ПОДКЛЮЧЕНИЕ REALTIME
 // ===============================
 
 
-async function loadPlayers(){
+function subscribeRoom(){
 
 
-let {data}=
+supabaseClient
 
-await db
-.from("players")
-.select("*")
-.eq(
-"room_id",
-roomId
-)
-.order(
-"score",
-{
-ascending:false
-}
-);
-
-
-
-let html="";
-
-
-data.forEach(p=>{
-
-
-html+=`
-
-<div class="player">
-
-<span>
-👤 ${p.nickname}
-</span>
-
-
-<span class="score">
-
-${p.score}
-
-</span>
-
-</div>
-
-`;
-
-});
-
-
-
-$("players").innerHTML=html;
-
-
-}
-
-
-
-
-
-// ===============================
-// REALTIME
-// ===============================
-
-
-function subscribe(){
-
-
-channel=
-
-db.channel(
+.channel(
 "room-"+roomId
 )
 
 
 .on(
 "postgres_changes",
+
 {
 event:"*",
 schema:"public",
@@ -1072,166 +877,33 @@ table:"players",
 filter:
 "room_id=eq."+roomId
 },
-loadPlayers
-)
 
+()=>{
+
+loadPlayers();
+
+}
+
+)
 
 
 .on(
 "postgres_changes",
+
 {
 event:"UPDATE",
 schema:"public",
-table:"rooms",
+table:"game_rooms",
 filter:
 "id=eq."+roomId
 },
-payload=>{
 
-
-currentRoom=
-payload.new;
+(data)=>{
 
 
 if(
-payload.new.status==="playing"
+data.new.game_state==="playing"
 ){
-
-openGame();
-
-}
-
-
-}
-
-)
-
-
-.subscribe();
-
-
-}
-
-
-
-
-
-
-// ===============================
-// LOAD SPOTIFY SONGS
-// ===============================
-
-
-async function loadSpotifyTracks(){
-
-
-/*
-Здесь будет следующий модуль:
-получение плейлистов Spotify
-и сохранение songs
-
-Пока берём уже добавленные песни
-*/
-
-
-let {data:songs}=
-
-await db
-.from("songs")
-.select("*")
-.limit(
-Number(
-$("trackCount").value
-)
-);
-
-
-
-if(!songs || songs.length===0){
-
-message(
-"Добавьте песни в таблицу songs",
-true
-);
-
-return;
-
-}
-
-
-
-for(
-let i=0;
-i<songs.length;
-i++
-){
-
-
-await db
-.from("room_tracks")
-.insert({
-
-room_id:roomId,
-
-song_id:songs[i].id,
-
-position:i+1
-
-});
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-// ===============================
-// START GAME
-// ===============================
-
-
-async function startGame(){
-
-
-if(!host)return;
-
-
-
-await db
-.from("rooms")
-.update({
-
-status:"playing",
-
-current_round:1
-
-})
-.eq(
-"id",
-roomId
-);
-
-
-}
-
-
-
-
-
-// ===============================
-// GAME
-// ===============================
-
-
-async function openGame(){
-
 
 $("roomScreen")
 .classList
@@ -1243,7 +915,6 @@ $("gameScreen")
 .remove("hidden");
 
 
-
 loadRound();
 
 
@@ -1251,75 +922,13 @@ loadRound();
 
 
 
+}
 
-async function loadRound(){
-
-
-let {data:room}=
-
-await db
-.from("rooms")
-.select("*")
-.eq(
-"id",
-roomId
 )
-.single();
 
 
+.subscribe();
 
-currentRoom=room;
-
-
-
-$("round")
-.textContent=
-room.current_round;
-
-
-
-$("total")
-.textContent=
-room.total_rounds;
-
-
-
-let {data}=
-
-await db
-.from("room_tracks")
-.select(
-"songs(*)"
-)
-.eq(
-"room_id",
-roomId
-)
-.eq(
-"position",
-room.current_round
-)
-.single();
-
-
-
-if(!data)return;
-
-
-
-currentSong=
-data.songs;
-
-
-
-$("audio").src=
-currentSong.preview_url;
-
-
-
-createAnswers();
-
-startTimer();
 
 
 }
@@ -1329,67 +938,350 @@ startTimer();
 
 
 // ===============================
-// ANSWERS
+// ИГРОКИ
 // ===============================
 
 
-async function createAnswers(){
+async function loadPlayers(){
 
 
-let {data:songs}=
+const {data}=
 
-await db
-.from("songs")
+await supabaseClient
+
+.from("players")
+
 .select("*")
-.limit(20);
+
+.eq(
+"room_id",
+roomId
+);
 
 
 
-let list=
-
-[songs.find(
-s=>s.id===currentSong.id
-),
-...songs]
-.filter(Boolean)
-.slice(0,4);
+let html="";
 
 
 
-list.sort(
+data.forEach(p=>{
+
+
+html+=`
+
+<div class="player">
+
+👤 ${p.nickname}
+
+<br>
+
+⭐ ${p.score}
+
+</div>
+
+`;
+
+
+});
+
+
+
+$("players")
+.innerHTML =
+html;
+
+
+
+}
+
+
+
+
+
+// ===============================
+// ВХОД В КОМНАТУ ПО КОДУ
+// ===============================
+
+
+async function joinRoom(){
+
+
+const nickname =
+$("nickname")
+.value
+.trim();
+
+
+const code =
+$("roomCodeInput")
+.value
+.trim()
+.toUpperCase();
+
+
+
+const {data:room}=
+
+await supabaseClient
+
+.from("game_rooms")
+
+.select("*")
+
+.eq(
+"room_code",
+code
+)
+
+.single();
+
+
+
+if(!room){
+
+message(
+"Комната не найдена"
+);
+
+return;
+
+}
+
+
+
+roomId =
+room.id;
+
+
+roomCode =
+code;
+
+
+
+
+const {data:player}=
+
+await supabaseClient
+
+.from("players")
+
+.insert({
+
+room_id:
+roomId,
+
+nickname:
+nickname,
+
+score:
+0
+
+})
+
+.select()
+.single();
+
+
+
+playerId =
+player.id;
+
+
+enterRoom();
+
+
+}
+
+
+
+
+
+// ===============================
+// СТАРТ ИГРЫ
+// ===============================
+
+
+async function startGame(){
+
+
+if(!isHost)
+return;
+
+
+
+await supabaseClient
+
+.from("game_rooms")
+
+.update({
+
+current_round:
+1,
+
+game_state:
+"playing"
+
+})
+
+.eq(
+"id",
+roomId
+);
+
+
+
+}
+
+
+
+
+
+// ===============================
+// ЗАГРУЗКА РАУНДА
+// ===============================
+
+
+async function loadRound(){
+
+
+const {data:room}=
+
+await supabaseClient
+
+.from("game_rooms")
+
+.select("*")
+
+.eq(
+"id",
+roomId
+)
+
+.single();
+
+
+
+const round =
+room.current_round;
+
+
+
+const {data:list}=
+
+await supabaseClient
+
+.from("room_tracks")
+
+.select("*")
+
+.eq(
+"room_id",
+roomId
+)
+
+.order(
+"position"
+);
+
+
+
+currentTrack =
+list[
+round-1
+];
+
+
+
+buildAnswers(
+list,
+currentTrack
+);
+
+
+
+startTimer();
+
+
+
+}
+
+
+
+
+// ===============================
+// СОЗДАНИЕ ОТВЕТОВ
+// ===============================
+
+
+function buildAnswers(
+list,
+correct
+){
+
+
+let variants =
+
+list
+.filter(
+x=>x.id!==correct.id
+)
+
+.sort(
+()=>Math.random()-0.5
+)
+
+.slice(0,3);
+
+
+
+variants.push(correct);
+
+
+
+variants.sort(
 ()=>Math.random()-0.5
 );
 
 
 
-$("answers").innerHTML="";
+$("answers")
+.innerHTML="";
 
 
 
-list.forEach(song=>{
+variants.forEach(track=>{
 
 
-let b=document.createElement("button");
-
-
-b.className="answer";
-
-
-b.innerText=
-
-song.artist+
-" - "+
-song.title;
+let btn =
+document.createElement(
+"button"
+);
 
 
 
-b.onclick=
-()=>answer(song);
+btn.className =
+"answer";
+
+
+
+btn.innerHTML =
+
+track.artist+
+" — "+
+track.title;
+
+
+
+btn.onclick=()=>{
+
+answer(track);
+
+};
 
 
 
 $("answers")
-.appendChild(b);
+.appendChild(btn);
 
 
 
@@ -1397,27 +1289,21 @@ $("answers")
 
 
 
-}
+if(
+currentTrack.preview_url
+){
 
-
-
-
-function playPreview(){
-
-
-$("audio")
-.play();
-
+$("audio").src =
+currentTrack.preview_url;
 
 }
 
 
 
+}
 
-
-
-// ===============================
-// TIMER
+  // ===============================
+// ТАЙМЕР
 // ===============================
 
 
@@ -1427,11 +1313,12 @@ function startTimer(){
 clearInterval(timer);
 
 
+
 timeLeft=15;
 
 
 $("timer")
-.textContent=timeLeft;
+.innerHTML=timeLeft;
 
 
 
@@ -1442,15 +1329,21 @@ timeLeft--;
 
 
 $("timer")
-.textContent=timeLeft;
+.innerHTML=timeLeft;
 
 
 
 if(timeLeft<=0){
 
+
 clearInterval(timer);
 
+
+answer(null);
+
+
 }
+
 
 
 },1000);
@@ -1462,61 +1355,134 @@ clearInterval(timer);
 
 
 
+// ===============================
+// ПРОСЛУШИВАНИЕ
+// ===============================
+
+
+function playMusic(){
+
+
+$("audio")
+.play()
+.catch(
+console.error
+);
+
+
+}
+
+
+
+
 
 // ===============================
-// ANSWER
+// ОТВЕТ ИГРОКА
 // ===============================
 
 
-async function answer(song){
+async function answer(track){
 
 
 
-let correct=
-song.id===currentSong.id;
+clearInterval(timer);
 
 
 
-await db
+let correct=false;
+
+
+let points=0;
+
+
+
+if(
+track &&
+track.id===currentTrack.id
+){
+
+
+correct=true;
+
+
+points =
+Math.max(
+20,
+Math.floor(
+100*(timeLeft/15)
+)
+);
+
+
+}
+
+
+
+
+await supabaseClient
+
 .from("answers")
+
 .insert({
 
-room_id:roomId,
+room_id:
+roomId,
 
-player_id:playerId,
+player_id:
+playerId,
 
-answer:song.title,
+round_number:
+currentTrack.position,
 
-correct:correct
+answer:
+track ?
+track.title :
+null,
+
+correct:
+correct,
+
+points:
+points
 
 });
+
+
 
 
 
 if(correct){
 
 
-let {data:p}=
+const {data:p}=
 
-await db
+await supabaseClient
+
 .from("players")
+
 .select("score")
+
 .eq(
 "id",
 playerId
 )
+
 .single();
 
 
 
-await db
+
+await supabaseClient
+
 .from("players")
+
 .update({
 
 score:
-p.score+100
+p.score+points
 
 })
+
 .eq(
 "id",
 playerId
@@ -1528,14 +1494,17 @@ playerId
 
 
 
-$("result")
-.innerHTML=
+showResult(
+correct,
+points
+);
 
-correct
-?
-"✅ Правильно!"
-:
-"❌ Неверно";
+
+
+setTimeout(
+nextRound,
+3000
+);
 
 
 
@@ -1545,7 +1514,229 @@ correct
 
 
 
+// ===============================
+// РЕЗУЛЬТАТ
+// ===============================
+
+
+function showResult(
+correct,
+points
+){
+
+
+if(correct){
+
+
+$("question")
+.innerHTML =
+
+"✅ Правильно! +"+
+points;
+
+
+
+}else{
+
+
+$("question")
+.innerHTML =
+
+"❌ Неправильно<br>"+
+currentTrack.artist+
+" — "+
+currentTrack.title;
+
+
+
+}
+
+
+
+}
+
+
+
+
+// ===============================
+// СЛЕДУЮЩИЙ РАУНД
+// ===============================
+
+
+async function nextRound(){
+
+
+if(!isHost)
+return;
+
+
+
+const {data:room}=
+
+await supabaseClient
+
+.from("game_rooms")
+
+.select("*")
+
+.eq(
+"id",
+roomId
+)
+
+.single();
+
+
+
+
+if(
+room.current_round >=
+room.total_rounds
+){
+
+
+await supabaseClient
+
+.from("game_rooms")
+
+.update({
+
+game_state:
+"finished"
+
+})
+
+.eq(
+"id",
+roomId
+);
+
+
+
+finishGame();
+
+
+
+return;
+
+}
+
+
+
+
+await supabaseClient
+
+.from("game_rooms")
+
+.update({
+
+current_round:
+room.current_round+1
+
+})
+
+.eq(
+"id",
+roomId
+);
+
+
+
+loadRound();
+
+
+
+}
+
+
+
+
+
+// ===============================
+// КОНЕЦ ИГРЫ
+// ===============================
+
+
+async function finishGame(){
+
+
+const {data}=
+
+await supabaseClient
+
+.from("players")
+
+.select("*")
+
+.eq(
+"room_id",
+roomId
+)
+
+.order(
+"score",
+{
+ascending:false
+}
+);
+
+
+
+$("gameScreen")
+.innerHTML = `
+
+<h2>
+🏆 Игра окончена
+</h2>
+
+
+<h3>
+
+Победитель:
+
+${data[0]?.nickname}
+
+</h3>
+
+
+${
+
+data.map(p=>`
+
+<div class="player">
+
+${p.nickname}
+
+⭐ ${p.score}
+
+</div>
+
+`).join("")
+
+}
+
+
+
+`;
+
+
+
+}
+
+
+
+// ===============================
+// ЗАПУСК
+// ===============================
+
+
+console.log(
+"🎵 Music Battle loaded"
+);
+
+
 </script>
+
 
 </body>
 
