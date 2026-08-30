@@ -1,67 +1,132 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Music Battle</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
 <style>
 
+*{
+    box-sizing:border-box;
+}
+
 body{
+
     margin:0;
     background:#111827;
     color:white;
-    font-family:Arial,sans-serif;
-    text-align:center;
+    font-family:
+    Arial,
+    "Segoe UI",
+    sans-serif;
+
 }
 
+
 .container{
+
     max-width:500px;
     margin:40px auto;
     background:#1f2937;
     padding:25px;
     border-radius:20px;
+
 }
+
+
+h1{
+
+    text-align:center;
+    color:#38bdf8;
+
+}
+
 
 input,select,button{
-    width:90%;
+
+
+    width:100%;
     padding:14px;
-    margin:8px;
-    border:none;
-    border-radius:10px;
+    margin:8px 0;
+
+    border-radius:12px;
+    border:0;
+
     font-size:16px;
+
 }
+
 
 button{
+
     background:#22c55e;
     color:white;
+
     cursor:pointer;
+
 }
+
 
 button:hover{
+
     opacity:.8;
+
 }
 
-.player{
-    background:#374151;
-    padding:12px;
-    margin:6px;
-    border-radius:10px;
+
+hr{
+
+    margin:25px 0;
+
 }
 
-.score{
-    color:#facc15;
-}
 
 .room{
-    font-size:22px;
+
+    text-align:center;
     color:#38bdf8;
+
 }
 
+
+.player{
+
+    background:#374151;
+
+    margin-top:10px;
+
+    padding:12px;
+
+    border-radius:12px;
+
+}
+
+
+.score{
+
+    color:#facc15;
+
+}
+
+
+.error{
+
+    color:#f87171;
+
+}
+
+
+
 </style>
+
 
 </head>
 
@@ -69,34 +134,46 @@ button:hover{
 <body>
 
 
+
 <div class="container">
 
 
-<h1>?? Music Battle</h1>
+<h1>🎵 Music Battle</h1>
 
 
-<h3>Âàø íèê</h3>
+<input 
+id="nickname"
+placeholder="Введите ваш ник">
 
-<input id="nickname" placeholder="Ââåäèòå íèê">
 
-
-<h3>VK ïðîôèëü</h3>
-
-<input id="vk" placeholder="https://vk.com/...">
+<input 
+id="vk"
+placeholder="Ссылка на VK профиль">
 
 
 <select id="tracks">
 
-<option value="10">10 ïåñåí</option>
-<option value="20">20 ïåñåí</option>
-<option value="50">50 ïåñåí</option>
+<option value="10">
+10 песен
+</option>
+
+<option value="20">
+20 песен
+</option>
+
+<option value="50">
+50 песен
+</option>
+
 
 </select>
 
 
 
 <button onclick="createRoom()">
-?? Ñîçäàòü êîìíàòó
+
+🚀 Создать комнату
+
 </button>
 
 
@@ -104,14 +181,16 @@ button:hover{
 <hr>
 
 
-<h3>Âõîä â êîìíàòó</h3>
-
-
-<input id="roomCode" placeholder="Êîä êîìíàòû">
+<input
+id="roomCode"
+maxlength="6"
+placeholder="Код комнаты">
 
 
 <button onclick="joinRoom()">
-?? Âîéòè
+
+🔑 Войти в комнату
+
 </button>
 
 
@@ -119,14 +198,21 @@ button:hover{
 <h2 class="room" id="room"></h2>
 
 
-<h3>Èãðîêè</h3>
+<div id="message"></div>
+
+
+<h3>
+👥 Игроки
+</h3>
 
 
 <div id="players"></div>
 
 
-
 </div>
+
+
+
 
 
 
@@ -157,43 +243,46 @@ SUPABASE_KEY
 
 
 // ===============================
-// VARIABLES
-// ===============================
 
 
 let roomId=null;
+
 let playerId=null;
 
 
 
+
 // ===============================
-// GENERATE ROOM CODE
+// CODE
 // ===============================
 
 
 function generateCode(){
 
-let chars=
+
+let chars =
 "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
 
-let result="";
+let code="";
 
 
 for(let i=0;i<6;i++){
 
-result += chars[
-Math.floor(
-Math.random()*chars.length
-)
+
+code += chars[
+Math.floor(Math.random()*chars.length)
 ];
 
-}
-
-
-return result;
 
 }
+
+
+return code;
+
+
+}
+
 
 
 
@@ -206,22 +295,28 @@ return result;
 async function createRoom(){
 
 
-let nickname =
-document.getElementById("nickname").value;
+
+let nick =
+document.getElementById("nickname").value.trim();
 
 
 let vk =
-document.getElementById("vk").value;
+document.getElementById("vk").value.trim();
 
 
-let tracks =
-document.getElementById("tracks").value;
+let count =
+Number(
+document.getElementById("tracks").value
+);
 
 
 
-if(!nickname){
+if(!nick){
 
-alert("Ââåäèòå íèê");
+showMessage(
+"Введите ник",
+true
+);
 
 return;
 
@@ -235,26 +330,36 @@ generateCode();
 
 
 let {data,error}=await supabaseClient
+
 .from("game_rooms")
+
 .insert({
 
 room_code:code,
 
 vk_profile:vk,
 
-track_count:Number(tracks),
+track_count:count,
 
 status:"waiting"
 
 })
+
 .select()
+
 .single();
+
 
 
 
 if(error){
 
-alert(error.message);
+console.log(error);
+
+showMessage(
+error.message,
+true
+);
 
 return;
 
@@ -265,13 +370,13 @@ return;
 roomId=data.id;
 
 
-
-await addPlayer(nickname);
-
+await addPlayer(nick);
 
 
-document.getElementById("room").innerHTML=
-"?? Êîìíàòà: "+code;
+
+document.getElementById("room").innerHTML =
+"🔑 Комната: "+code;
+
 
 
 startRealtime();
@@ -285,37 +390,82 @@ startRealtime();
 
 
 
+
 // ===============================
-// JOIN ROOM
+// JOIN
 // ===============================
+
 
 
 async function joinRoom(){
 
 
+
 let code =
-document.getElementById("roomCode").value;
+document.getElementById("roomCode").value
+.trim()
+.toUpperCase();
 
 
-let nickname =
-document.getElementById("nickname").value;
+
+let nick =
+document.getElementById("nickname").value.trim();
+
+
+
+
+if(!nick || !code){
+
+showMessage(
+"Заполни поля",
+true
+);
+
+return;
+
+}
+
+
 
 
 
 let {data,error}=await supabaseClient
+
 .from("game_rooms")
+
 .select("*")
+
 .eq(
 "room_code",
 code
 )
-.single();
+
+.maybeSingle();
+
 
 
 
 if(error){
 
-alert("Êîìíàòà íå íàéäåíà");
+console.log(error);
+
+showMessage(
+"Ошибка поиска комнаты",
+true
+);
+
+return;
+
+}
+
+
+
+if(!data){
+
+showMessage(
+"Комната не найдена",
+true
+);
 
 return;
 
@@ -326,17 +476,23 @@ return;
 roomId=data.id;
 
 
-await addPlayer(nickname);
+
+await addPlayer(nick);
 
 
-document.getElementById("room").innerHTML=
-"?? Êîìíàòà: "+code;
+
+document.getElementById("room").innerHTML =
+"🔑 Комната: "+code;
+
 
 
 startRealtime();
 
 
+
 }
+
+
 
 
 
@@ -348,39 +504,47 @@ startRealtime();
 // ===============================
 
 
-async function addPlayer(nickname){
+async function addPlayer(nick){
 
 
 
 let {data,error}=await supabaseClient
+
 .from("players")
+
 .insert({
 
 room_id:roomId,
 
-nickname:nickname,
+nickname:nick,
 
 score:0
 
 })
+
 .select()
+
 .single();
 
 
 
 if(error){
 
-alert(error.message);
+console.log(error);
 
 return;
 
 }
 
 
+
 playerId=data.id;
 
 
+
 }
+
+
 
 
 
@@ -400,26 +564,42 @@ loadPlayers();
 
 
 supabaseClient
-.channel("room-"+roomId)
+
+.channel(
+"room-"+roomId
+)
+
 
 .on(
+
 "postgres_changes",
+
 {
+
 event:"*",
+
 schema:"public",
+
 table:"players",
+
 filter:
 "room_id=eq."+roomId
+
 },
+
+
 ()=>{
 
 loadPlayers();
 
 }
 
+
 )
 
+
 .subscribe();
+
 
 
 }
@@ -433,13 +613,18 @@ loadPlayers();
 async function loadPlayers(){
 
 
+
 let {data,error}=await supabaseClient
+
 .from("players")
+
 .select("*")
+
 .eq(
 "room_id",
 roomId
 )
+
 .order(
 "score",
 {
@@ -457,25 +642,25 @@ let html="";
 
 
 
-data.forEach(player=>{
+data.forEach(p=>{
 
 
 html += `
 
 <div class="player">
 
-?? ${player.nickname}
+👤 ${p.nickname}
 
 <br>
 
 <span class="score">
 
-?? ${player.score} î÷êîâ
+🏆 ${p.score} очков
 
 </span>
 
-
 </div>
+
 
 `;
 
@@ -491,6 +676,26 @@ document.getElementById("players")
 
 }
 
+
+
+
+
+
+
+function showMessage(text,error=false){
+
+
+document.getElementById("message").innerHTML=
+
+`
+<p class="${error?'error':''}">
+${text}
+</p>
+`;
+
+
+
+}
 
 
 
