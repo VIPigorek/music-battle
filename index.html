@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Music Battle</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://vk.ru/js/api/openapi.js"></script>
 <style>
 *{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Arial,sans-serif;background:linear-gradient(135deg,#020617,#111827,#1e1b4b);color:#fff}
 .hidden{display:none!important}.menu-page{width:min(680px,94%);margin:20px auto;padding:24px;background:linear-gradient(145deg,rgba(30,41,59,.96),rgba(15,23,42,.98));border-radius:28px;box-shadow:0 20px 70px rgba(0,0,0,.45);animation:fade .35s ease}
@@ -92,11 +93,38 @@ button,input,select{width:100%;border:none;border-radius:16px;padding:15px;margi
  <button class="music-source" onclick="selectMusicSource('playlist',this)">🔗 VK плейлист</button>
  <input id="musicQuery" placeholder="Исполнитель или ссылка на плейлист">
  <button onclick="searchMusic()">🔍 Найти</button><div id="musicResults"></div>
+ <button onclick="showVkPlaylist()">🎵 Мой плейлист ВК</button>
+ <div id="vkPlaylistBox" class="hidden">
+  <p class="small">Это встроенный плеер ВК для прослушивания — треки отсюда пока нельзя добавить в комнату напрямую, для игры используй поиск исполнителя выше.</p>
+  <div id="vk_playlist_542339527_164"></div>
+ </div>
  <button onclick="backToRoomOrMenu()">← Назад</button>
 </div>
 
-<div id="topWorld" class="menu-page hidden"><h2>🌎 Топ 100 мира</h2><div id="topList"></div><button onclick="backMenu()">Назад</button></div>
-<div id="topRussia" class="menu-page hidden"><h2>🇷🇺 Топ России</h2><div id="leaderboard"></div><button onclick="backMenu()">Назад</button></div>
+<div id="topWorld" class="menu-page hidden">
+ <h2>🌎 Топ мира</h2><p class="small">Чарт Apple Music. Нажми «Создать комнату» — топ-треки сразу загрузятся в игру.</p>
+ <input id="topWorldNick" placeholder="Ваш ник">
+ <div class="mode-box"><h3>Игроков в комнате</h3>
+  <button class="mode-btn chart-mode-btn active" onclick="selectChartMode(2,this)">👤 1 VS 1</button>
+  <button class="mode-btn chart-mode-btn" onclick="selectChartMode(5,this)">👥 5 игроков</button>
+  <button class="mode-btn chart-mode-btn" onclick="selectChartMode(10,this)">🏟️ 10 игроков</button>
+ </div>
+ <div id="topList">Загрузка чарта...</div>
+ <button onclick="createChartRoom('world')">🚀 Создать комнату из топа</button>
+ <button onclick="backMenu()">Назад</button>
+</div>
+<div id="topRussia" class="menu-page hidden">
+ <h2>🇷🇺 Топ России</h2><p class="small">Чарт Apple Music (Россия). Нажми «Создать комнату» — топ-треки сразу загрузятся в игру.</p>
+ <input id="topRussiaNick" placeholder="Ваш ник">
+ <div class="mode-box"><h3>Игроков в комнате</h3>
+  <button class="mode-btn chart-mode-btn active" onclick="selectChartMode(2,this)">👤 1 VS 1</button>
+  <button class="mode-btn chart-mode-btn" onclick="selectChartMode(5,this)">👥 5 игроков</button>
+  <button class="mode-btn chart-mode-btn" onclick="selectChartMode(10,this)">🏟️ 10 игроков</button>
+ </div>
+ <div id="leaderboard">Загрузка чарта...</div>
+ <button onclick="createChartRoom('ru')">🚀 Создать комнату из топа</button>
+ <button onclick="backMenu()">Назад</button>
+</div>
 <div id="questPage" class="menu-page hidden"><h2>🎯 Ежедневные задания</h2><div id="quests"></div><button onclick="backMenu()">Назад</button></div>
 <div id="profilePage" class="menu-page hidden"><h2>👤 Профиль</h2><img id="profileAvatar" class="avatar" alt=""><h3 id="profileName">Игрок</h3><p id="profileStats"></p><button onclick="backMenu()">Назад</button></div>
 
@@ -110,10 +138,84 @@ const hide=id=>$(id)?.classList.add("hidden");
 const show=id=>$(id)?.classList.remove("hidden");
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
-let roomId=null,playerId=null,currentRound=0,selectedMode=2,searching=false;
+let roomId=null,playerId=null,currentRound=0,selectedMode=2,searching=false,roomMaxPlayers=null;
 let roundTimerInterval=null,matchInterval=null,currentTrackData=null;
 let roomTracksList=[],roomChannel=null;
 let profile={nickname:localStorage.getItem("mb_nickname")||"",country:"RU"};
+let selectedChartMode=2,chartCache={world:[],ru:[]};
+let vkPlaylistLoaded=false;
+
+function selectChartMode(count,btn){
+ selectedChartMode=count;
+ const box=btn.closest(".mode-box");
+ box.querySelectorAll(".mode-btn").forEach(x=>x.classList.remove("active"));
+ btn.classList.add("active");
+}
+function resetChartMode(){
+ selectedChartMode=2;
+ document.querySelectorAll(".chart-mode-btn").forEach(x=>x.classList.remove("active"));
+ document.querySelectorAll(".chart-mode-btn")[0]?.classList.add("active");
+}
+
+async function loadTopChart(country){
+ const box=country==="world"?$("topList"):$("leaderboard");
+ box.innerHTML="Загрузка чарта...";
+ try{
+  const storefront=country==="world"?"us":"ru";
+  const res=await fetch("https://rss.applemarketingtools.com/api/v2/"+storefront+"/music/most-played/25/songs.json");
+  const json=await res.json();
+  const items=(json.feed?.results||[]).slice(0,20);
+  chartCache[country]=items;
+  box.innerHTML=items.length?items.map((t,i)=>`<div class="rank-card"><span>${i+1}. <b>${escapeHtml(t.artistName)}</b> — ${escapeHtml(t.name)}</span></div>`).join(""):"Не удалось загрузить чарт";
+ }catch(e){box.innerHTML="Не удалось загрузить чарт: "+e.message}
+}
+
+async function createChartRoom(country){
+ const nickInput=country==="world"?$("topWorldNick"):$("topRussiaNick");
+ const nickname=nickInput.value.trim();
+ if(!nickname)return alert("Введите ник");
+ const items=chartCache[country];
+ if(!items||!items.length)return alert("Чарт ещё не загрузился, подождите пару секунд и попробуйте снова");
+ profile.nickname=nickname;localStorage.setItem("mb_nickname",nickname);
+ const box=country==="world"?$("topList"):$("leaderboard");
+ box.innerHTML="Готовим комнату и подтягиваем треки...";
+ const code=Math.random().toString(36).slice(2,8).toUpperCase();
+ const {data:room,error}=await supabaseClient.from("game_rooms").insert({room_code:code,track_count:10,total_rounds:10,current_round:0,game_state:"waiting",max_players:selectedChartMode}).select().single();
+ if(error)return alert("Ошибка создания комнаты: "+error.message);
+ roomId=room.id;currentRound=0;roomTracksList=[];roomMaxPlayers=selectedChartMode;
+ const {data:p,error:pe}=await supabaseClient.from("players").insert({room_id:roomId,nickname,score:0,online:true}).select().single();
+ if(pe)return alert(pe.message);
+ playerId=p.id;
+ subscribeRoom(roomId);
+ await addChartTracksToRoom(items.slice(0,10));
+ hideAll();show("roomScreen");$("roomCode").textContent=code;await heartbeat();loadRoom();
+}
+
+async function addChartTracksToRoom(items){
+ const lookups=await Promise.all(items.map(async(t,idx)=>{
+  try{
+   const term=encodeURIComponent(t.artistName+" "+t.name);
+   const res=await fetch("https://itunes.apple.com/search?term="+term+"&entity=song&limit=1");
+   const json=await res.json();
+   const s=json.results?.[0];
+   if(!s)return null;
+   return {room_id:roomId,artist:s.artistName,title:s.trackName,preview_url:s.previewUrl||"",cover_url:s.artworkUrl100||"",position:Date.now()+idx};
+  }catch(e){return null}
+ }));
+ const rows=lookups.filter(x=>x&&x.preview_url);
+ if(rows.length)await supabaseClient.from("room_tracks").insert(rows);
+}
+
+function showVkPlaylist(){
+ show("vkPlaylistBox");
+ if(vkPlaylistLoaded)return;
+ vkPlaylistLoaded=true;
+ const tryInit=()=>{
+  if(window.VK&&window.VK.Widgets)VK.Widgets.Playlist("vk_playlist_542339527_164",542339527,164,"",{});
+  else setTimeout(tryInit,300);
+ };
+ tryInit();
+}
 
 function subscribeRoom(id){
  if(roomChannel){supabaseClient.removeChannel(roomChannel);roomChannel=null}
@@ -153,7 +255,13 @@ async function playRoundIntro(){
 }
 
 function hideAll(){document.querySelectorAll(".menu-page").forEach(x=>x.classList.add("hidden"))}
-function openMenu(id){hideAll();show(id);if(id==="topWorld")loadLeaderboard("world");if(id==="topRussia")loadLeaderboard("ru");if(id==="questPage")loadQuests();if(id==="profilePage")loadProfileUI()}
+function openMenu(id){
+ hideAll();show(id);
+ if(id==="topWorld"){resetChartMode();if($("topWorldNick"))$("topWorldNick").value=profile.nickname||"";loadTopChart("world")}
+ if(id==="topRussia"){resetChartMode();if($("topRussiaNick"))$("topRussiaNick").value=profile.nickname||"";loadTopChart("ru")}
+ if(id==="questPage")loadQuests();
+ if(id==="profilePage")loadProfileUI();
+}
 function backMenu(){hideAll();show("mainMenu")}
 function showCreate(){hideAll();show("createScreen")}
 function showJoin(){hideAll();show("joinScreen")}
@@ -181,9 +289,9 @@ async function createRoom(){
  if(!nickname)return alert("Введите ник");
  profile.nickname=nickname;localStorage.setItem("mb_nickname",nickname);
  const code=Math.random().toString(36).slice(2,8).toUpperCase();
- const {data:room,error}=await supabaseClient.from("game_rooms").insert({room_code:code,track_count:10,total_rounds:10,current_round:0,game_state:"waiting"}).select().single();
+ const {data:room,error}=await supabaseClient.from("game_rooms").insert({room_code:code,track_count:10,total_rounds:10,current_round:0,game_state:"waiting",max_players:selectedMode}).select().single();
  if(error)return alert("Ошибка создания комнаты: "+error.message);
- roomId=room.id;currentRound=0;roomTracksList=[];
+ roomId=room.id;currentRound=0;roomTracksList=[];roomMaxPlayers=selectedMode;
  const {data:p,error:pe}=await supabaseClient.from("players").insert({room_id:roomId,nickname,score:0,online:true}).select().single();
  if(pe)return alert(pe.message);
  playerId=p.id;
@@ -196,7 +304,9 @@ async function joinRoomByCode(){
  if(!nickname||!code)return alert("Введите ник и код");
  const {data:room,error}=await supabaseClient.from("game_rooms").select("*").eq("room_code",code).single();
  if(error||!room)return alert("Комната не найдена");
- roomId=room.id;profile.nickname=nickname;localStorage.setItem("mb_nickname",nickname);
+ const {count:playerCount}=await supabaseClient.from("players").select("*",{count:"exact",head:true}).eq("room_id",room.id);
+ if(room.max_players&&(playerCount||0)>=room.max_players)return alert("Комната уже заполнена ("+room.max_players+" игроков)");
+ roomId=room.id;roomMaxPlayers=room.max_players||null;profile.nickname=nickname;localStorage.setItem("mb_nickname",nickname);
  const {data:p,error:pe}=await supabaseClient.from("players").insert({room_id:roomId,nickname,score:0,online:true}).select().single();
  if(pe)return alert(pe.message);
  playerId=p.id;
@@ -213,16 +323,23 @@ async function loadRoom(){
  if(!roomId)return;
  const {data,error}=await supabaseClient.from("players").select("*").eq("room_id",roomId).order("created_at");
  if(error)return console.log(error);
- $("roomPlayers").innerHTML=(data||[]).map((p,i)=>`<div class="player-card"><span>${i===0?"👑":"🎵"} <b>${escapeHtml(p.nickname)}</b></span><span>${p.score||0} ⭐</span></div>`).join("")||"Пока никого нет";
- $("roomStatus").textContent=`Игроков: ${(data||[]).length}`;
+ $("roomPlayers").innerHTML=(data||[]).map((p,i)=>`<div class="player-card"><span>${i===0?"👑":"🎵"} <b>${escapeHtml(p.nickname)}</b> ${p.online?"🟢":"⚪"}</span><span>${p.score||0} ⭐</span></div>`).join("")||"Пока никого нет";
+ $("roomStatus").textContent=`Игроков: ${(data||[]).length}${roomMaxPlayers?"/"+roomMaxPlayers:""}`;
 }
 
 function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 
 async function leaveRoom(){
- try{if(playerId)await supabaseClient.from("players").delete().eq("id",playerId)}catch(e){}
- unsubscribeRoom();
- roomId=null;playerId=null;currentRound=0;roomTracksList=[];hideAll();show("mainMenu");
+ if(roundTimerInterval){clearInterval(roundTimerInterval);roundTimerInterval=null}
+ try{$("musicPlayer").pause()}catch(e){}
+ try{
+  if(playerId)await supabaseClient.from("players").delete().eq("id",playerId);
+ }catch(e){console.log("leaveRoom error",e)}
+ finally{
+  unsubscribeRoom();
+  roomId=null;playerId=null;currentRound=0;roomTracksList=[];roomMaxPlayers=null;
+  hideAll();show("mainMenu");
+ }
 }
 
 async function startMatchmaking(){
@@ -248,12 +365,12 @@ async function startMatchmaking(){
 
 async function createMatch(queuePlayers){
  const code=Math.random().toString(36).slice(2,8).toUpperCase();
- const {data:room,error}=await supabaseClient.from("game_rooms").insert({room_code:code,track_count:10,total_rounds:10,current_round:0,game_state:"waiting"}).select().single();
+ const {data:room,error}=await supabaseClient.from("game_rooms").insert({room_code:code,track_count:10,total_rounds:10,current_round:0,game_state:"waiting",max_players:selectedMode}).select().single();
  if(error)return alert(error.message);
  await supabaseClient.from("players").insert(queuePlayers.map(p=>({room_id:room.id,nickname:p.nickname,score:0,online:true})));
  await supabaseClient.from("matchmaking_queue").delete().in("id",queuePlayers.map(p=>p.id));
  const mine=(await supabaseClient.from("players").select("*").eq("room_id",room.id).eq("nickname",profile.nickname).order("created_at").limit(1)).data?.[0];
- roomId=room.id;playerId=mine?.id||null;currentRound=0;roomTracksList=[];
+ roomId=room.id;playerId=mine?.id||null;currentRound=0;roomTracksList=[];roomMaxPlayers=selectedMode;
  subscribeRoom(roomId);
  hideAll();show("roomScreen");$("roomCode").textContent=code;loadRoom();
 }
@@ -407,13 +524,6 @@ function showEffect(text,cls){const d=document.createElement("div");d.className=
 
 async function loadQuests(){
  $("quests").innerHTML=["🎧 Угадай 10 песен","🏆 Победи 3 игроков","🔥 Сыграй сегодня","⭐ Набери 1000 очков"].map(q=>`<div class="quest-card">${q}</div>`).join("");
-}
-
-async function loadLeaderboard(type){
- const box=type==="world"?$("topList"):$("leaderboard");box.innerHTML="Загрузка...";
- let q=supabaseClient.from("profiles").select("*").order("rating",{ascending:false}).limit(100);
- if(type==="ru")q=q.eq("country","RU");
- const {data}=await q;box.innerHTML=(data||[]).map((p,i)=>`<div class="rank-card"><span>${i+1}. ${escapeHtml(p.nickname)}</span><b>⭐ ${p.rating||0}</b></div>`).join("")||"Пока рейтинга нет";
 }
 
 function loadProfileUI(){
