@@ -110,9 +110,47 @@ const hide=id=>$(id)?.classList.add("hidden");
 const show=id=>$(id)?.classList.remove("hidden");
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
-let roomId=null,playerId=null,currentRound=0,currentTrack=0,selectedMode=2,searching=false;
+let roomId=null,playerId=null,currentRound=0,selectedMode=2,searching=false;
 let roundTimerInterval=null,matchInterval=null,currentTrackData=null;
+let roomTracksList=[],roomChannel=null;
 let profile={nickname:localStorage.getItem("mb_nickname")||"",country:"RU"};
+
+function subscribeRoom(id){
+ if(roomChannel){supabaseClient.removeChannel(roomChannel);roomChannel=null}
+ roomChannel=supabaseClient.channel("room_"+id)
+  .on("postgres_changes",{event:"UPDATE",schema:"public",table:"game_rooms",filter:"id=eq."+id},payload=>onRoomStateChange(payload.new))
+  .on("postgres_changes",{event:"*",schema:"public",table:"players",filter:"room_id=eq."+id},()=>{loadRoom()})
+  .subscribe();
+}
+
+function unsubscribeRoom(){
+ if(roomChannel){supabaseClient.removeChannel(roomChannel);roomChannel=null}
+}
+
+async function loadRoomTracks(){
+ const {data}=await supabaseClient.from("room_tracks").select("*").eq("room_id",roomId).order("position",{ascending:true});
+ roomTracksList=data||[];
+}
+
+async function onRoomStateChange(row){
+ if(!row)return;
+ if(row.game_state==="playing"){
+  if(!roomTracksList.length)await loadRoomTracks();
+  if(row.current_round!==currentRound){
+   currentRound=row.current_round;
+   await playRoundIntro();
+  }
+ }else if(row.game_state==="finished"){
+  await finishGame();
+ }
+}
+
+async function playRoundIntro(){
+ if(roundTimerInterval)clearInterval(roundTimerInterval);
+ hideAll();show("gameScreen");$("roundNumber").textContent=currentRound;$("playerTitle").textContent="Приготовьтесь...";
+ $("answers").innerHTML="";
+ await sleep(3000);playBeep();await sleep(350);await loadTrack();
+}
 
 function hideAll(){document.querySelectorAll(".menu-page").forEach(x=>x.classList.add("hidden"))}
 function openMenu(id){hideAll();show(id);if(id==="topWorld")loadLeaderboard("world");if(id==="topRussia")loadLeaderboard("ru");if(id==="questPage")loadQuests();if(id==="profilePage")loadProfileUI()}
@@ -145,10 +183,11 @@ async function createRoom(){
  const code=Math.random().toString(36).slice(2,8).toUpperCase();
  const {data:room,error}=await supabaseClient.from("game_rooms").insert({room_code:code,track_count:10,total_rounds:10,current_round:0,game_state:"waiting"}).select().single();
  if(error)return alert("Ошибка создания комнаты: "+error.message);
- roomId=room.id;
+ roomId=room.id;currentRound=0;roomTracksList=[];
  const {data:p,error:pe}=await supabaseClient.from("players").insert({room_id:roomId,nickname,score:0,online:true}).select().single();
  if(pe)return alert(pe.message);
  playerId=p.id;
+ subscribeRoom(roomId);
  hideAll();show("roomScreen");$("roomCode").textContent=code;await heartbeat();loadRoom();
 }
 
@@ -160,7 +199,14 @@ async function joinRoomByCode(){
  roomId=room.id;profile.nickname=nickname;localStorage.setItem("mb_nickname",nickname);
  const {data:p,error:pe}=await supabaseClient.from("players").insert({room_id:roomId,nickname,score:0,online:true}).select().single();
  if(pe)return alert(pe.message);
- playerId=p.id;hideAll();show("roomScreen");$("roomCode").textContent=code;await heartbeat();loadRoom();
+ playerId=p.id;
+ subscribeRoom(roomId);
+ await heartbeat();
+ if(room.game_state==="playing"){
+  currentRound=room.current_round;await loadRoomTracks();hideAll();show("gameScreen");$("roundNumber").textContent=currentRound;await loadTrack();
+ }else{
+  currentRound=room.current_round||0;roomTracksList=[];hideAll();show("roomScreen");$("roomCode").textContent=code;loadRoom();
+ }
 }
 
 async function loadRoom(){
@@ -175,7 +221,8 @@ function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;",
 
 async function leaveRoom(){
  try{if(playerId)await supabaseClient.from("players").delete().eq("id",playerId)}catch(e){}
- roomId=null;playerId=null;currentRound=0;currentTrack=0;hideAll();show("mainMenu");
+ unsubscribeRoom();
+ roomId=null;playerId=null;currentRound=0;roomTracksList=[];hideAll();show("mainMenu");
 }
 
 async function startMatchmaking(){
@@ -204,8 +251,11 @@ async function createMatch(queuePlayers){
  const {data:room,error}=await supabaseClient.from("game_rooms").insert({room_code:code,track_count:10,total_rounds:10,current_round:0,game_state:"waiting"}).select().single();
  if(error)return alert(error.message);
  await supabaseClient.from("players").insert(queuePlayers.map(p=>({room_id:room.id,nickname:p.nickname,score:0,online:true})));
+ await supabaseClient.from("matchmaking_queue").delete().in("id",queuePlayers.map(p=>p.id));
  const mine=(await supabaseClient.from("players").select("*").eq("room_id",room.id).eq("nickname",profile.nickname).order("created_at").limit(1)).data?.[0];
- roomId=room.id;playerId=mine?.id||null;hideAll();show("roomScreen");$("roomCode").textContent=code;loadRoom();
+ roomId=room.id;playerId=mine?.id||null;currentRound=0;roomTracksList=[];
+ subscribeRoom(roomId);
+ hideAll();show("roomScreen");$("roomCode").textContent=code;loadRoom();
 }
 
 async function leaveSearch(){
@@ -251,14 +301,16 @@ async function addTrack(artist,title,preview,cover){
 
 async function startRound(){
  if(!roomId)return;
- const {count}=await supabaseClient.from("room_tracks").select("*",{count:"exact",head:true}).eq("room_id",roomId);
- if(!count)return alert("Сначала добавьте хотя бы один трек");
- currentRound++;
- if(currentRound>Math.min(10,count)){return finishGame()}
- await supabaseClient.from("game_rooms").update({current_round:currentRound,game_state:"playing"}).eq("id",roomId);
- hideAll();show("gameScreen");$("roundNumber").textContent=currentRound;$("playerTitle").textContent="Приготовьтесь...";
- $("answers").innerHTML="";
- await sleep(3000);playBeep();await sleep(350);await loadTrack();
+ if(!roomTracksList.length)await loadRoomTracks();
+ if(!roomTracksList.length)return alert("Сначала добавьте хотя бы один трек");
+ const total=Math.min(10,roomTracksList.length);
+ const next=currentRound+1;
+ if(next>total){
+  await supabaseClient.from("game_rooms").update({game_state:"finished"}).eq("id",roomId);
+  return;
+ }
+ await supabaseClient.from("game_rooms").update({current_round:next,game_state:"playing"}).eq("id",roomId);
+ // UI-переход выполнится у всех игроков (включая нас) через realtime-подписку onRoomStateChange
 }
 
 function playBeep(){
@@ -269,22 +321,28 @@ function playBeep(){
 }
 
 async function loadTrack(){
- const {data,error}=await supabaseClient.from("room_tracks").select("*").eq("room_id",roomId).order("position",{ascending:true}).range(currentTrack,currentTrack);
- if(error||!data?.[0])return finishGame();
- currentTrackData=data[0];currentTrack++;
- $("playerArtist").textContent=currentTrackData.artist||"Исполнитель";
+ if(!roomTracksList.length)await loadRoomTracks();
+ const track=roomTracksList[currentRound-1];
+ if(!track){await supabaseClient.from("game_rooms").update({game_state:"finished"}).eq("id",roomId);return}
+ currentTrackData=track;
+ $("playerArtist").textContent=track.artist||"Исполнитель";
  $("playerTitle").textContent="Угадай название";
- $("playerCover").src=currentTrackData.cover_url||"";
- const audio=$("musicPlayer");audio.pause();audio.currentTime=0;audio.src=currentTrackData.preview_url;
- buildAnswers(currentTrackData);
+ $("playerCover").src=track.cover_url||"";
+ const audio=$("musicPlayer");audio.pause();audio.currentTime=0;audio.src=track.preview_url;
+ buildAnswers(track);
  try{await audio.play()}catch(e){console.log("Автовоспроизведение заблокировано",e)}
  startTimer();
 }
 
 function buildAnswers(track){
  const correct=track.title;
+ const pool=[...new Set(roomTracksList.filter(t=>t.id!==track.id).map(t=>t.title).filter(t=>t&&t!==correct))];
+ for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}
+ const fillers=["Другая песня","Не угадал","Не знаю"];
+ const decoys=pool.slice(0,3);
+ while(decoys.length<3)decoys.push(fillers[decoys.length]);
+ const choices=[correct,...decoys].sort(()=>Math.random()-.5);
  $("answers").innerHTML="";
- const choices=[correct,"Не угадал","Другая песня","Не знаю"].sort(()=>Math.random()-.5);
  choices.forEach(c=>{
   const b=document.createElement("button");b.className="answer-btn";b.textContent=c;b.onclick=()=>submitAnswer(c===correct,b);$("answers").appendChild(b);
  });
@@ -332,8 +390,9 @@ async function finishGame(){
 }
 
 async function playAgain(){
- currentRound=0;currentTrack=0;
+ currentRound=0;
  await supabaseClient.from("players").update({score:0}).eq("room_id",roomId);
+ await supabaseClient.from("game_rooms").update({current_round:0,game_state:"waiting"}).eq("id",roomId);
  hideAll();show("roomScreen");loadRoom();
 }
 async function exitAfterGame(){await leaveRoom()}
